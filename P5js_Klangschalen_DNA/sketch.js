@@ -47,7 +47,7 @@ function setup() {
 
     createCanvas(canvasWidth,canvasHeight);
     interactionCanvas = createCanvas(canvasWidth,canvasHeight);
-    cnv.background(10);
+    background(10);
     fft = new p5.FFT();
     mySound.amp(ampFactor);
     mySound.play();
