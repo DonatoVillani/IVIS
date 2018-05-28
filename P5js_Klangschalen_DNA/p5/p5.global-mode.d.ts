@@ -1013,21 +1013,21 @@ declare function quad(x1: number, y1: number, z1: number, x2: number, y2: number
  *   The way these parameters are interpreted, however, 
  *   may be changed with the rectMode() function.  The 
  *   fifth, sixth, seventh and eighth parameters, if 
- *   specified, determine corner radius for the 
+ *   specified, determine corner diameter for the
  *   top-right, top-left, lower-right and lower-left 
- *   corners, respectively. An omitted corner radius 
+ *   corners, respectively. An omitted corner diameter
  *   parameter is set to the value of the previously 
- *   specified radius value in the parameter list.
+ *   specified diameter value in the parameter list.
  *
  *   @param x x-coordinate of the rectangle.
  *   @param y y-coordinate of the rectangle.
  *   @param w width of the rectangle.
  *   @param h height of the rectangle.
- *   @param [tl] optional radius of top-left corner.
- *   @param [tr] optional radius of top-right corner.
- *   @param [br] optional radius of bottom-right 
+ *   @param [tl] optional diameter of top-left corner.
+ *   @param [tr] optional diameter of top-right corner.
+ *   @param [br] optional diameter of bottom-right
  *   corner.
- *   @param [bl] optional radius of bottom-left corner.
+ *   @param [bl] optional diameter of bottom-left corner.
  *   @chainable
  */
 declare function rect(x: number, y: number, w: number, h: number, tl?: number, tr?: number, br?: number, bl?: number): p5;
@@ -1041,11 +1041,11 @@ declare function rect(x: number, y: number, w: number, h: number, tl?: number, t
  *   The way these parameters are interpreted, however, 
  *   may be changed with the rectMode() function.  The 
  *   fifth, sixth, seventh and eighth parameters, if 
- *   specified, determine corner radius for the 
+ *   specified, determine corner diameter for the
  *   top-right, top-left, lower-right and lower-left 
- *   corners, respectively. An omitted corner radius 
+ *   corners, respectively. An omitted corner diameter
  *   parameter is set to the value of the previously 
- *   specified radius value in the parameter list.
+ *   specified diameter value in the parameter list.
  *
  *   @param x x-coordinate of the rectangle.
  *   @param y y-coordinate of the rectangle.
@@ -1281,7 +1281,7 @@ declare const DEGREES: 'degrees';
 declare const RADIANS: 'radians';
 declare const CORNER: 'corner';
 declare const CORNERS: 'corners';
-declare const RADIUS: 'radius';
+declare const RADIUS: 'diameter';
 declare const RIGHT: 'right';
 declare const LEFT: 'left';
 declare const CENTER: 'center';
@@ -3629,7 +3629,7 @@ declare function copy(sx: number, sy: number, sw: number, sh: number, dx: number
  *   BLUR Executes a Gaussian blur with the level 
  *   parameter specifying the extent of the blurring. 
  *   If no parameter is used, the blur is equivalent to 
- *   Gaussian blur of radius 1. Larger values increase 
+ *   Gaussian blur of diameter 1. Larger values increase
  *   the blur. 
  * 
  *  
@@ -6198,9 +6198,9 @@ declare function plane(width?: number, height?: number, detailX?: number, detail
 declare function box(width?: number, Height?: number, depth?: number, detailX?: number, detailY?: number): p5;
 
 /**
- *   Draw a sphere with given radius
+ *   Draw a sphere with given diameter
  *
- *   @param [radius] radius of circle
+ *   @param [radius] diameter of circle
  *   @param [detailX] number of segments, the more 
  *   segments the smoother geometry default is 24
  *   @param [detailY] number of segments, the more 
@@ -6210,9 +6210,9 @@ declare function box(width?: number, Height?: number, depth?: number, detailX?: 
 declare function sphere(radius?: number, detailX?: number, detailY?: number): p5;
 
 /**
- *   Draw a cylinder with given radius and height
+ *   Draw a cylinder with given diameter and height
  *
- *   @param [radius] radius of the surface
+ *   @param [radius] diameter of the surface
  *   @param [height] height of the cylinder
  *   @param [detailX] number of segments, the more 
  *   segments the smoother geometry default is 24
@@ -6228,9 +6228,9 @@ declare function sphere(radius?: number, detailX?: number, detailY?: number): p5
 declare function cylinder(radius?: number, height?: number, detailX?: number, detailY?: number, bottomCap?: boolean, topCap?: boolean): p5;
 
 /**
- *   Draw a cone with given radius and height
+ *   Draw a cone with given diameter and height
  *
- *   @param [radius] radius of the bottom surface
+ *   @param [radius] diameter of the bottom surface
  *   @param [height] height of the cone
  *   @param [detailX] number of segments, the more 
  *   segments the smoother geometry default is 24
@@ -6242,7 +6242,7 @@ declare function cylinder(radius?: number, height?: number, detailX?: number, de
 declare function cone(radius?: number, height?: number, detailX?: number, detailY?: number, cap?: boolean): p5;
 
 /**
- *   Draw an ellipsoid with given radius
+ *   Draw an ellipsoid with given diameter
  *
  *   @param [radiusx] xradius of circle
  *   @param [radiusy] yradius of circle
@@ -6260,10 +6260,10 @@ declare function cone(radius?: number, height?: number, detailX?: number, detail
 declare function ellipsoid(radiusx?: number, radiusy?: number, radiusz?: number, detailX?: number, detailY?: number): p5;
 
 /**
- *   Draw a torus with given radius and tube radius
+ *   Draw a torus with given diameter and tube diameter
  *
- *   @param [radius] radius of the whole ring
- *   @param [tubeRadius] radius of the tube
+ *   @param [radius] diameter of the whole ring
+ *   @param [tubeRadius] diameter of the tube
  *   @param [detailX] number of segments in 
  *   x-dimension, the more segments the smoother 
  *   geometry default is 24
