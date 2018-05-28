@@ -11,7 +11,7 @@ var canvasWidth = 2000;
 
 const ampFactor = 0.8;
 
-const interactionThreshold = canvasHeight/10;
+const interactionThreshold = canvasHeight/10*5;
 
 //defines a frequency range - factor 1 maps from 0 to spectrum.length so from 0Hz to around 22Khz. Factor 4 can be seen as dividor -> 22khz : 4 = 5.5Khz  so the range would be 0 to 5.5khz
 const horizontalZoomFactor = 5;
@@ -45,9 +45,13 @@ function preload() {
 
 function setup() {
 
+
     createCanvas(canvasWidth,canvasHeight);
-    interactionCanvas = createCanvas(canvasWidth,canvasHeight);
     background(10);
+
+    //interactionCanvas = createCanvas(canvasWidth,canvasHeight);
+    //interactionCanvas.background(0,0,0,0);
+
     fft = new p5.FFT();
     mySound.amp(ampFactor);
     mySound.play();
@@ -67,29 +71,28 @@ function draw() {
         var scaledAmplitude = spectrum[i] *1.2;
 
         if (interactiveCircles[i] == null || scaledAmplitude > interactiveCircles[i].maxAmplitude){
-            interactiveCircles[i] = {x:x, y:circlesY, radius:getRadius(scaledAmplitude), maxAmplitude:scaledAmplitude};
-            //console.log(interactiveCircles);
+            interactiveCircles[i] = {x:x, y:circlesY, diameter:getDiameter(scaledAmplitude), maxAmplitude:scaledAmplitude}
         }
 
         var distance = dist(mouseX, mouseY, interactiveCircles[i].x, interactiveCircles[i].y);
-        if(interactiveCircles[i].radius > interactionThreshold && distance < interactiveCircles[i].radius){
-            console.log("DIST"+ distance);
+        if(interactiveCircles[i].diameter > interactionThreshold && distance < (interactiveCircles[i].diameter/2)){
+            console.log(i+ " DIST "+ distance);
+            stroke(0);
+            textSize(50);
+            text('a', interactiveCircles[i].x, interactiveCircles[i].y);
+            line(interactiveCircles[i].x, interactiveCircles[i].y, mouseX, mouseY);
+
+            rect(150, 50, 140, 50);
+            fill(255);
+            text("Here comes the information: MHz, chord, meaning",100, 75);
+
+
+
+
+            //fill(255);
+            //ellipse(interactiveCircles[i].x,interactiveCircles[i].y,interactiveCircles[i].diameter,interactiveCircles[i].diameter);
             //console.log(interactiveCircles[i]);
         }
-
-
-/*
-        for (var j=0; j< interactiveCircles.length;j++) {
-            var distance = dist(mouseX, mouseY, interactiveCircles[j].x, interactiveCircles[j].y);
-            if (interactiveCircles[j] != null && interactiveCircles[j] > interactionThreshold) {
-                if(distance < interactiveCircles[j].radius){
-                    fill(255);
-                    console.log("HIT");
-                    ellipse(interactiveCircles[j].x, interactiveCircles[j].y, interactiveCircles[j].radius, interactiveCircles[j].radius);
-                }
-            }
-        }
-*/
 
 
         //image(interactionCanvas, 0, 0);
@@ -97,8 +100,8 @@ function draw() {
         //console.log(maxAmpPerFrequency);
 
         //var scaledAmplitude = map(spectrum[i], 0, 256, 0, 1000)
-       // var x = map(i, 0, spectrum.length, 0, width);
-       // var h = -height + map(spectrum[i], 0, 255, height, 0);
+        // var x = map(i, 0, spectrum.length, 0, width);
+        // var h = -height + map(spectrum[i], 0, 255, height, 0);
         //rect(x, height, width / spectrum.length, h )
         //strokeWeight(4);
         noFill();
@@ -112,7 +115,7 @@ function draw() {
         //manual but working
         //ellipse(((canvasWidth/100)*i), canvasHeight/2, scaledAmplitude*(canvasHeight/400), scaledAmplitude*(canvasHeight/400));
         if(x < canvasWidth)
-        ellipse(x, circlesY, getRadius(scaledAmplitude), getRadius(scaledAmplitude));
+            ellipse(x, circlesY, getDiameter(scaledAmplitude), getDiameter(scaledAmplitude));
 
 
         //getMaxAmp per Band
@@ -120,16 +123,16 @@ function draw() {
 
     }
 
-  /*  var waveform = fft.waveform();
-     noFill();
-     beginShape();
-     stroke(255,0,0); // waveform is red
-     strokeWeight(1);
-     for (var i = 0; i< waveform.length; i++){
-     var x = map(i, 0, waveform.length, 0, width);
-     var y = map( waveform[i], -1, 1, 0, height);
-     vertex(x,y);
-     }*/
+    /*  var waveform = fft.waveform();
+       noFill();
+       beginShape();
+       stroke(255,0,0); // waveform is red
+       strokeWeight(1);
+       for (var i = 0; i< waveform.length; i++){
+       var x = map(i, 0, waveform.length, 0, width);
+       var y = map( waveform[i], -1, 1, 0, height);
+       vertex(x,y);
+       }*/
 
     endShape();
 }
@@ -248,7 +251,7 @@ function findNote() {
 }
 
 
-function getRadius(scaledAmplitude){
+function getDiameter(scaledAmplitude){
     return scaledAmplitude*(canvasHeight/400);
 }
 
