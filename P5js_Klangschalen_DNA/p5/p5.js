@@ -12461,7 +12461,7 @@ module.exports={
                 "type": "Number"
             },
             "example": [
-                "\n<div><code>\nfunction draw() {\n  background(200);\n\n  var leftWall = 25;\n  var rightWall = 75;\n\n  // xm is just the mouseX, while\n  // xc is the mouseX, but constrained\n  // between the leftWall and rightWall!\n  var xm = mouseX;\n  var xc = constrain(mouseX, leftWall, rightWall);\n\n  // Draw the walls.\n  stroke(150);\n  line(leftWall, 0, leftWall, height);\n  line(rightWall, 0, rightWall, height);\n\n  // Draw xm and xc as circles.\n  noStroke();\n  fill(150);\n  ellipse(xm, 33, 9, 9); // Not Constrained\n  fill(0);\n  ellipse(xc, 66, 9, 9); // Constrained\n}\n</code></div>"
+                "\n<div><code>\nfunction draw() {\n  background(200);\n\n  var leftWall = 25;\n  var rightWall = 75;\n\n  // xm is just the mouseX, while\n  // xc is the mouseX, but constrained\n  // between the leftWall and rightWall!\n  var xm = mouseX;\n  var xc = constrain(mouseX, leftWall, rightWall);\n\n  // Draw the walls.\n  stroke(150);\n  line(leftWall, 0, leftWall, height);\n  line(rightWall, 0, rightWall, height);\n\n  // Draw xm and xc as interactiveCircles.\n  noStroke();\n  fill(150);\n  ellipse(xm, 33, 9, 9); // Not Constrained\n  fill(0);\n  ellipse(xc, 66, 9, 9); // Constrained\n}\n</code></div>"
             ],
             "alt": "2 vertical lines. 2 ellipses move with mouse X 1 does not move passed lines",
             "class": "p5",
@@ -63878,7 +63878,7 @@ p5.prototype.ceil = Math.ceil;
  *   line(leftWall, 0, leftWall, height);
  *   line(rightWall, 0, rightWall, height);
  *
- *   // Draw xm and xc as circles.
+ *   // Draw xm and xc as interactiveCircles.
  *   noStroke();
  *   fill(150);
  *   ellipse(xm, 33, 9, 9); // Not Constrained

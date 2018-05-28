@@ -37781,7 +37781,7 @@ p5.prototype.ceil = Math.ceil;
  *   line(leftWall, 0, leftWall, height);
  *   line(rightWall, 0, rightWall, height);
  *
- *   // Draw xm and xc as circles.
+ *   // Draw xm and xc as interactiveCircles.
  *   noStroke();
  *   fill(150);
  *   ellipse(xm, 33, 9, 9); // Not Constrained
