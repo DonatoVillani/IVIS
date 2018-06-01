@@ -8,6 +8,8 @@
 // ====================CONSTANTS======================
 var canvasHeight = 1000;
 var canvasWidth = 2000;
+var upLoad = false;
+var mySound, uploadBtn, playPauseBtn, uploadedAudio, uploadAnim;
 
 const ampFactor = 0.8;
 
@@ -39,14 +41,45 @@ var frequency;//the frequency in hertz
 
 
 function preload() {
-    soundFormats('mp3', 'ogg');
     mySound = loadSound('assets/klangschale_gr7_sc37307.mp3');
 }
 
+
+function uploaded(file){
+    upLoad = true;
+    uploadedAudio = loadSound(file.data, uploadedAudioPlay);
+}
+
+
+function uploadedAudioPlay(audioFile){
+    upLoad = false;
+    if(mySound.isPlaying()){
+        mySound.pause();
+    }
+
+    mySound = audioFile;
+    mySound.loop();
+}
+
+
 function setup() {
 
+    uploadAnim = select('#uploading-animation');
 
-    createCanvas(canvasWidth,canvasHeight);
+    createCanvas(windowWidth, windowHeight);
+
+    playPauseBtn = createButton("Play / Pause");
+
+    uploadBtn = createFileInput(uploaded);
+
+    uploadBtn.addClass("upload-btn");
+
+    uploadBtn.addClass("upload-btn");
+
+    playPauseBtn.addClass("toggle-btn");
+
+    playPauseBtn.mousePressed(toggleAudio);
+
     background(10);
 
     //interactionCanvas = createCanvas(canvasWidth,canvasHeight);
@@ -58,6 +91,14 @@ function setup() {
 }
 
 function draw() {
+
+
+    //Add a loading animation for the uploaded track
+    if (upLoad) {
+        uploadAnim.addClass('is-visible');
+    } else {
+        uploadAnim.removeClass('is-visible');
+    }
 
 
     var spectrum = fft.analyze();
@@ -85,9 +126,6 @@ function draw() {
             rect(150, 50, 140, 50);
             fill(255);
             text("Here comes the information: MHz, chord, meaning",100, 75);
-
-
-
 
             //fill(255);
             //ellipse(interactiveCircles[i].x,interactiveCircles[i].y,interactiveCircles[i].diameter,interactiveCircles[i].diameter);
@@ -137,103 +175,103 @@ function draw() {
     endShape();
 }
 
-function keyPressed(){
-    printing = true;
-    var textCounter = 0;
-    var inc = 0.01;
-    if(keyCode == UP && smoothing < 1-inc) smoothing += inc;
-    if(keyCode == DOWN && smoothing > inc) smoothing -= inc;
-    if (key == 's') {
-        save("normal.png");
-        saveHiRes(2);
-        exit();
-    }
-    if(key=='p'){
-        var lastBand = 0;
-        var textY = (height/2)-50;
-        textSize(128);
-        textFont(mandali);
-        for(var i =0;i<amps.length;i++){
-            if(amps[i]>200){
-                textCounter +=1;
-                System.out.println(i+" scaledAmp: "+amps[i]+" with Hertz of: "+fft.indexToFreq(i));
-                fill(100,30);
-                textAlign(LEFT,BOTTOM);
-                //text((int)(fft.indexToFreq(i))+" Hz",(width/100)*i,((i-lastBand<5?textY+200:textY)/4)*3);
-                text((int)(fft.indexToFreq(i))+" Hz",(width/8*7),100+(150*textCounter));
-                var midi= 69+12*(log(fft.indexToFreq(i)/440)/log(2));// formula that transform frequency to midi numbers
-                var n= int (midi);//cast to int
-                var note ="";
-                //the octave have 12 tones and semitones. So, if we get a modulo of 12, we get the note names independently of the frequency
-                if (n%12==9)
-                {
-                    note = ("a");
-                }
-
-                if (n%12==10)
-                {
-                    note = ("a#");
-                }
-
-                if (n%12==11)
-                {
-                    note = ("b");
-                }
-
-                if (n%12==0)
-                {
-                    note = ("c");
-                }
-
-                if (n%12==1)
-                {
-                    note = ("c#");
-                }
-
-                if (n%12==2)
-                {
-                    note = ("d");
-                }
-
-                if (n%12==3)
-                {
-                    note = ("d#");
-                }
-
-                if (n%12==4)
-                {
-                    note = ("e");
-                }
-
-                if (n%12==5)
-                {
-                    note = ("f");
-                }
-
-                if (n%12==6)
-                {
-                    note = ("f#");
-                }
-
-                if (n%12==7)
-                {
-                    note = ("g");
-                }
-
-                if (n%12==8)
-                {
-                    note = ("g#");
-                }
-                fill(100,70,0,90);
-                textAlign(CENTER,CENTER);
-                text(note,map(i, 0, specSize, 0, width*horizontalZoomFactor),((i-lastBand<5?textY+100:textY)));
-                lastBand = i;
-            }
-        }
-
-        save("image.png");
-    }
-}
+// function keyPressed(){
+//     printing = true;
+//     var textCounter = 0;
+//     var inc = 0.01;
+//     if(keyCode == UP && smoothing < 1-inc) smoothing += inc;
+//     if(keyCode == DOWN && smoothing > inc) smoothing -= inc;
+//     if (key == 's') {
+//         save("normal.png");
+//         saveHiRes(2);
+//         exit();
+//     }
+//     if(key=='p'){
+//         var lastBand = 0;
+//         var textY = (height/2)-50;
+//         textSize(128);
+//         textFont(mandali);
+//         for(var i =0;i<amps.length;i++){
+//             if(amps[i]>200){
+//                 textCounter +=1;
+//                 System.out.println(i+" scaledAmp: "+amps[i]+" with Hertz of: "+fft.indexToFreq(i));
+//                 fill(100,30);
+//                 textAlign(LEFT,BOTTOM);
+//                 //text((int)(fft.indexToFreq(i))+" Hz",(width/100)*i,((i-lastBand<5?textY+200:textY)/4)*3);
+//                 text((int)(fft.indexToFreq(i))+" Hz",(width/8*7),100+(150*textCounter));
+//                 var midi= 69+12*(log(fft.indexToFreq(i)/440)/log(2));// formula that transform frequency to midi numbers
+//                 var n= int (midi);//cast to int
+//                 var note ="";
+//                 //the octave have 12 tones and semitones. So, if we get a modulo of 12, we get the note names independently of the frequency
+//                 if (n%12==9)
+//                 {
+//                     note = ("a");
+//                 }
+//
+//                 if (n%12==10)
+//                 {
+//                     note = ("a#");
+//                 }
+//
+//                 if (n%12==11)
+//                 {
+//                     note = ("b");
+//                 }
+//
+//                 if (n%12==0)
+//                 {
+//                     note = ("c");
+//                 }
+//
+//                 if (n%12==1)
+//                 {
+//                     note = ("c#");
+//                 }
+//
+//                 if (n%12==2)
+//                 {
+//                     note = ("d");
+//                 }
+//
+//                 if (n%12==3)
+//                 {
+//                     note = ("d#");
+//                 }
+//
+//                 if (n%12==4)
+//                 {
+//                     note = ("e");
+//                 }
+//
+//                 if (n%12==5)
+//                 {
+//                     note = ("f");
+//                 }
+//
+//                 if (n%12==6)
+//                 {
+//                     note = ("f#");
+//                 }
+//
+//                 if (n%12==7)
+//                 {
+//                     note = ("g");
+//                 }
+//
+//                 if (n%12==8)
+//                 {
+//                     note = ("g#");
+//                 }
+//                 fill(100,70,0,90);
+//                 textAlign(CENTER,CENTER);
+//                 text(note,map(i, 0, specSize, 0, width*horizontalZoomFactor),((i-lastBand<5?textY+100:textY)));
+//                 lastBand = i;
+//             }
+//         }
+//
+//         save("image.png");
+//     }
+// }
 
 function findNote() {
     var frequency = 0.0;
@@ -254,6 +292,20 @@ function findNote() {
 function getDiameter(scaledAmplitude){
     return scaledAmplitude*(canvasHeight/400);
 }
+
+
+function toggleAudio() {
+    if (mySound.isPlaying()) {
+        mySound.pause();
+    } else {
+        mySound.play();
+    }
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+}
+
 
 /*
 function getCircleXCoordinate(i, spectrum.length){
