@@ -48,6 +48,7 @@ function preload() {
 function uploaded(file){
     upLoad = true;
     uploadedAudio = loadSound(file.data, uploadedAudioPlay);
+    setup();
 }
 
 
@@ -58,15 +59,16 @@ function uploadedAudioPlay(audioFile){
     }
 
     mySound = audioFile;
-    mySound.loop();
+    mySound.play();
 }
 
 
 function setup() {
 
-    uploadAnim = select('#uploading-animation');
-
     createCanvas(windowWidth, windowHeight);
+
+
+    uploadAnim = select('#uploading-animation');
 
     playPauseBtn = createButton("Play / Pause");
 
@@ -80,15 +82,15 @@ function setup() {
 
     playPauseBtn.mousePressed(toggleAudio);
 
-    background(10);
 
     //interactionCanvas = createCanvas(canvasWidth,canvasHeight);
     //interactionCanvas.background(0,0,0,0);
 
     fft = new p5.FFT();
     mySound.amp(ampFactor);
-    mySound.play();
+    //mySound.play();
 }
+
 
 function draw() {
 
