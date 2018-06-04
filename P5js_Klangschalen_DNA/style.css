@@ -1,4 +1,127 @@
-html, body {
-    margin: 0;
+@import url('https://fonts.googleapis.com/css?family=Roboto:400');
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    color: #fff;
+    background: #000;
+    overflow: hidden;
+    font-size: 0.85rem;
+}
+
+
+.content {
+    padding: 3em 0;
+}
+
+.content.main {
+    min-height: 100vh;
     padding: 0;
 }
+
+.canvas-wrapper {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+canvas {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+}
+
+.p5_loading {
+    background: black;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgb(0, 0, 0);
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    overflow: hidden;
+}
+
+.p5_loading__inner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate3d(-50%, -50%, 0);
+    transform: translate3d(-50%, -50%, 0);
+    display: flex;
+}
+
+.p5_loading__inner span {
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    background: rgb(255, 255, 255);
+    margin: 0 20px;
+    transform-origin: center;
+    animation: noiseLoad 0.5s infinite ease-in-out alternate;
+}
+
+@keyframes noiseLoad {
+    from {
+        transform: scale(0);
+        background: rgb(255, 255, 255);
+    }
+
+    to {
+        transform: scale(1);
+        background: rgb(0, 0, 0);
+
+    }
+}
+
+#uploading-animation {
+    display: none;
+}
+
+#uploading-animation.is-visible {
+    display: block;
+}
+
+.upload-btn::before,
+.toggle-btn {
+    padding: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: currentColor;
+    position: absolute;
+    bottom: 2vmax;
+    border: 1px solid;
+    width: 255px;
+}
+
+.upload-btn::before {
+    content: 'Upload your track';
+    display: inline-block;
+    left: 2vmax;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
+
+
+.toggle-btn {
+    background: transparent;
+    color: currentColor;
+    right: 2vmax;
+}
+
+
+
