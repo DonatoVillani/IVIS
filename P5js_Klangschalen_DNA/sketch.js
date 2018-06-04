@@ -8,6 +8,8 @@
 // ====================CONSTANTS======================
 var canvasHeight = 1000;
 var canvasWidth = 2000;
+var upLoad = false;
+var mySound, uploadBtn, playPauseBtn, uploadedAudio, uploadAnim;
 
 const ellipseDiameterZoomFactor = (canvasHeight/300);
 
@@ -48,15 +50,48 @@ var centroids = [];
 var textCounter = 0;
 
 function preload() {
-    soundFormats('mp3', 'ogg');
     mySound = loadSound('assets/klangschale_gr7_sc37307.mp3');
 }
 
+function uploaded(file){
+    upLoad = true;
+    uploadedAudio = loadSound(file.data, uploadedAudioPlay);
+    setup();
+}
+
+
+function uploadedAudioPlay(audioFile){
+    upLoad = false;
+    if(mySound.isPlaying()){
+        mySound.pause();
+    }
+
+    mySound = audioFile;
+    mySound.play();
+}
+
+
+
 function setup() {
 
+    createCanvas(windowWidth,windowHeight);
 
-    createCanvas(canvasWidth,canvasHeight);
-    background(10);
+    uploadAnim = select('#uploading-animation');
+
+    playPauseBtn = createButton("Play / Pause");
+
+    uploadBtn = createFileInput(uploaded);
+
+    uploadBtn.addClass("upload-btn");
+
+    uploadBtn.addClass("upload-btn");
+
+    playPauseBtn.addClass("toggle-btn");
+
+    playPauseBtn.mousePressed(toggleAudio);
+
+
+    background(50);
 
     interactionCanvas = createGraphics(300,100);
     interactionCanvas.background(0,0,0,0);
@@ -64,10 +99,17 @@ function setup() {
 
     fft = new p5.FFT();
     mySound.amp(ampFactor);
-    mySound.play();
+   // mySound.play();
 }
 
 function draw() {
+
+    //Add a loading animation for the uploaded track
+    if (upLoad) {
+        uploadAnim.addClass('is-visible');
+    } else {
+        uploadAnim.removeClass('is-visible');
+    }
 
 
     spectrum = fft.analyze();
@@ -118,7 +160,7 @@ function draw() {
         }else{
             interactionCanvas.background(0);
         }
-        image(interactionCanvas, 0, 0);
+       // image(interactionCanvas, 0, 0);
 
 
         //image(interactionCanvas, 0, 0);
@@ -256,4 +298,16 @@ function getMusicalNoteFromMidi(midi){
     }
 
     return note;
+}
+
+function toggleAudio() {
+    if (mySound.isPlaying()) {
+        mySound.pause();
+    } else {
+        mySound.play();
+    }
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }
