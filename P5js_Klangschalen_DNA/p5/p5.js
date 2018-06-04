@@ -4539,12 +4539,12 @@ module.exports={
         {
             "file": "src/core/2d_primitives.js",
             "line": 333,
-            "description": "<p>Draws a rectangle to the screen. A rectangle is a four-sided shape with\nevery angle at ninety degrees. By default, the first two parameters set\nthe location of the upper-left corner, the third sets the width, and the\nfourth sets the height. The way these parameters are interpreted, however,\nmay be changed with the rectMode() function.\n<br><br>\nThe fifth, sixth, seventh and eighth parameters, if specified,\ndetermine corner radius for the top-right, top-left, lower-right and\nlower-left corners, respectively. An omitted corner radius parameter is set\nto the value of the previously specified radius value in the parameter list.</p>\n",
+            "description": "<p>Draws a rectangle to the screen. A rectangle is a four-sided shape with\nevery angle at ninety degrees. By default, the first two parameters set\nthe location of the upper-left corner, the third sets the width, and the\nfourth sets the height. The way these parameters are interpreted, however,\nmay be changed with the rectMode() function.\n<br><br>\nThe fifth, sixth, seventh and eighth parameters, if specified,\ndetermine corner diameter for the top-right, top-left, lower-right and\nlower-left corners, respectively. An omitted corner diameter parameter is set\nto the value of the previously specified diameter value in the parameter list.</p>\n",
             "itemtype": "method",
             "name": "rect",
             "chainable": 1,
             "example": [
-                "\n<div>\n<code>\n// Draw a rectangle at location (30, 20) with a width and height of 55.\nrect(30, 20, 55, 55);\n</code>\n</div>\n\n<div>\n<code>\n// Draw a rectangle with rounded corners, each having a radius of 20.\nrect(30, 20, 55, 55, 20);\n</code>\n</div>\n\n<div>\n<code>\n// Draw a rectangle with rounded corners having the following radii:\n// top-left = 20, top-right = 15, bottom-right = 10, bottom-left = 5.\nrect(30, 20, 55, 55, 20, 15, 10, 5);\n</code>\n</div>"
+                "\n<div>\n<code>\n// Draw a rectangle at location (30, 20) with a width and height of 55.\nrect(30, 20, 55, 55);\n</code>\n</div>\n\n<div>\n<code>\n// Draw a rectangle with rounded corners, each having a diameter of 20.\nrect(30, 20, 55, 55, 20);\n</code>\n</div>\n\n<div>\n<code>\n// Draw a rectangle with rounded corners having the following radii:\n// top-left = 20, top-right = 15, bottom-right = 10, bottom-left = 5.\nrect(30, 20, 55, 55, 20, 15, 10, 5);\n</code>\n</div>"
             ],
             "alt": "55x55 white rect with black outline in mid-right of canvas.\n55x55 white rect with black outline and rounded edges in mid-right of canvas.\n55x55 white rect with black outline and rounded edges of different radii.",
             "class": "p5",
@@ -4576,25 +4576,25 @@ module.exports={
                         },
                         {
                             "name": "tl",
-                            "description": "<p>optional radius of top-left corner.</p>\n",
+                            "description": "<p>optional diameter of top-left corner.</p>\n",
                             "type": "Number",
                             "optional": true
                         },
                         {
                             "name": "tr",
-                            "description": "<p>optional radius of top-right corner.</p>\n",
+                            "description": "<p>optional diameter of top-right corner.</p>\n",
                             "type": "Number",
                             "optional": true
                         },
                         {
                             "name": "br",
-                            "description": "<p>optional radius of bottom-right corner.</p>\n",
+                            "description": "<p>optional diameter of bottom-right corner.</p>\n",
                             "type": "Number",
                             "optional": true
                         },
                         {
                             "name": "bl",
-                            "description": "<p>optional radius of bottom-left corner.</p>\n",
+                            "description": "<p>optional diameter of bottom-left corner.</p>\n",
                             "type": "Number",
                             "optional": true
                         }
@@ -10275,7 +10275,7 @@ module.exports={
         {
             "file": "src/image/pixels.js",
             "line": 236,
-            "description": "<p>Applies a filter to the canvas.\n<br><br></p>\n<p>The presets options are:\n<br><br></p>\n<p>THRESHOLD\nConverts the image to black and white pixels depending if they are above or\nbelow the threshold defined by the level parameter. The parameter must be\nbetween 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is used.\n<br><br></p>\n<p>GRAY\nConverts any colors in the image to grayscale equivalents. No parameter\nis used.\n<br><br></p>\n<p>OPAQUE\nSets the alpha channel to entirely opaque. No parameter is used.\n<br><br></p>\n<p>INVERT\nSets each pixel to its inverse value. No parameter is used.\n<br><br></p>\n<p>POSTERIZE\nLimits each channel of the image to the number of colors specified as the\nparameter. The parameter can be set to values between 2 and 255, but\nresults are most noticeable in the lower ranges.\n<br><br></p>\n<p>BLUR\nExecutes a Gaussian blur with the level parameter specifying the extent\nof the blurring. If no parameter is used, the blur is equivalent to\nGaussian blur of radius 1. Larger values increase the blur.\n<br><br></p>\n<p>ERODE\nReduces the light areas. No parameter is used.\n<br><br></p>\n<p>DILATE\nIncreases the light areas. No parameter is used.</p>\n",
+            "description": "<p>Applies a filter to the canvas.\n<br><br></p>\n<p>The presets options are:\n<br><br></p>\n<p>THRESHOLD\nConverts the image to black and white pixels depending if they are above or\nbelow the threshold defined by the level parameter. The parameter must be\nbetween 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is used.\n<br><br></p>\n<p>GRAY\nConverts any colors in the image to grayscale equivalents. No parameter\nis used.\n<br><br></p>\n<p>OPAQUE\nSets the alpha channel to entirely opaque. No parameter is used.\n<br><br></p>\n<p>INVERT\nSets each pixel to its inverse value. No parameter is used.\n<br><br></p>\n<p>POSTERIZE\nLimits each channel of the image to the number of colors specified as the\nparameter. The parameter can be set to values between 2 and 255, but\nresults are most noticeable in the lower ranges.\n<br><br></p>\n<p>BLUR\nExecutes a Gaussian blur with the level parameter specifying the extent\nof the blurring. If no parameter is used, the blur is equivalent to\nGaussian blur of diameter 1. Larger values increase the blur.\n<br><br></p>\n<p>ERODE\nReduces the light areas. No parameter is used.\n<br><br></p>\n<p>DILATE\nIncreases the light areas. No parameter is used.</p>\n",
             "itemtype": "method",
             "name": "filter",
             "params": [
@@ -17374,13 +17374,13 @@ module.exports={
         {
             "file": "src/webgl/primitives.js",
             "line": 213,
-            "description": "<p>Draw a sphere with given radius</p>\n",
+            "description": "<p>Draw a sphere with given diameter</p>\n",
             "itemtype": "method",
             "name": "sphere",
             "params": [
                 {
-                    "name": "radius",
-                    "description": "<p>radius of circle</p>\n",
+                    "name": "diameter",
+                    "description": "<p>diameter of circle</p>\n",
                     "type": "Number",
                     "optional": true
                 },
@@ -17399,7 +17399,7 @@ module.exports={
             ],
             "chainable": 1,
             "example": [
-                "\n<div>\n<code>\n// draw a sphere with radius 200\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  sphere(40);\n}\n</code>\n</div>"
+                "\n<div>\n<code>\n// draw a sphere with diameter 200\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  sphere(40);\n}\n</code>\n</div>"
             ],
             "class": "p5",
             "module": "Shape",
@@ -17408,13 +17408,13 @@ module.exports={
         {
             "file": "src/webgl/primitives.js",
             "line": 391,
-            "description": "<p>Draw a cylinder with given radius and height</p>\n",
+            "description": "<p>Draw a cylinder with given diameter and height</p>\n",
             "itemtype": "method",
             "name": "cylinder",
             "params": [
                 {
-                    "name": "radius",
-                    "description": "<p>radius of the surface</p>\n",
+                    "name": "diameter",
+                    "description": "<p>diameter of the surface</p>\n",
                     "type": "Number",
                     "optional": true
                 },
@@ -17451,7 +17451,7 @@ module.exports={
             ],
             "chainable": 1,
             "example": [
-                "\n<div>\n<code>\n//draw a spinning cylinder with radius 20 and height 50\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  rotateX(frameCount * 0.01);\n  rotateZ(frameCount * 0.01);\n  cylinder(20, 50);\n}\n</code>\n</div>"
+                "\n<div>\n<code>\n//draw a spinning cylinder with diameter 20 and height 50\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  rotateX(frameCount * 0.01);\n  rotateZ(frameCount * 0.01);\n  cylinder(20, 50);\n}\n</code>\n</div>"
             ],
             "class": "p5",
             "module": "Shape",
@@ -17460,13 +17460,13 @@ module.exports={
         {
             "file": "src/webgl/primitives.js",
             "line": 482,
-            "description": "<p>Draw a cone with given radius and height</p>\n",
+            "description": "<p>Draw a cone with given diameter and height</p>\n",
             "itemtype": "method",
             "name": "cone",
             "params": [
                 {
-                    "name": "radius",
-                    "description": "<p>radius of the bottom surface</p>\n",
+                    "name": "diameter",
+                    "description": "<p>diameter of the bottom surface</p>\n",
                     "type": "Number",
                     "optional": true
                 },
@@ -17497,7 +17497,7 @@ module.exports={
             ],
             "chainable": 1,
             "example": [
-                "\n<div>\n<code>\n//draw a spinning cone with radius 40 and height 70\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  rotateX(frameCount * 0.01);\n  rotateZ(frameCount * 0.01);\n  cone(40, 70);\n}\n</code>\n</div>"
+                "\n<div>\n<code>\n//draw a spinning cone with diameter 40 and height 70\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  rotateX(frameCount * 0.01);\n  rotateZ(frameCount * 0.01);\n  cone(40, 70);\n}\n</code>\n</div>"
             ],
             "class": "p5",
             "module": "Shape",
@@ -17506,7 +17506,7 @@ module.exports={
         {
             "file": "src/webgl/primitives.js",
             "line": 553,
-            "description": "<p>Draw an ellipsoid with given radius</p>\n",
+            "description": "<p>Draw an ellipsoid with given diameter</p>\n",
             "itemtype": "method",
             "name": "ellipsoid",
             "params": [
@@ -17543,7 +17543,7 @@ module.exports={
             ],
             "chainable": 1,
             "example": [
-                "\n<div>\n<code>\n// draw an ellipsoid with radius 20, 30 and 40.\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  ellipsoid(20, 30, 40);\n}\n</code>\n</div>"
+                "\n<div>\n<code>\n// draw an ellipsoid with diameter 20, 30 and 40.\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  ellipsoid(20, 30, 40);\n}\n</code>\n</div>"
             ],
             "class": "p5",
             "module": "Shape",
@@ -17552,19 +17552,19 @@ module.exports={
         {
             "file": "src/webgl/primitives.js",
             "line": 643,
-            "description": "<p>Draw a torus with given radius and tube radius</p>\n",
+            "description": "<p>Draw a torus with given diameter and tube diameter</p>\n",
             "itemtype": "method",
             "name": "torus",
             "params": [
                 {
-                    "name": "radius",
-                    "description": "<p>radius of the whole ring</p>\n",
+                    "name": "diameter",
+                    "description": "<p>diameter of the whole ring</p>\n",
                     "type": "Number",
                     "optional": true
                 },
                 {
                     "name": "tubeRadius",
-                    "description": "<p>radius of the tube</p>\n",
+                    "description": "<p>diameter of the tube</p>\n",
                     "type": "Number",
                     "optional": true
                 },
@@ -17583,7 +17583,7 @@ module.exports={
             ],
             "chainable": 1,
             "example": [
-                "\n<div>\n<code>\n//draw a spinning torus with radius 200 and tube radius 60\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  rotateX(frameCount * 0.01);\n  rotateY(frameCount * 0.01);\n  torus(50, 15);\n}\n</code>\n</div>"
+                "\n<div>\n<code>\n//draw a spinning torus with diameter 200 and tube diameter 60\nfunction setup() {\n  createCanvas(100, 100, WEBGL);\n}\n\nfunction draw() {\n  background(200);\n  rotateX(frameCount * 0.01);\n  rotateY(frameCount * 0.01);\n  torus(50, 15);\n}\n</code>\n</div>"
             ],
             "class": "p5",
             "module": "Shape",
@@ -45202,19 +45202,19 @@ p5.prototype.quad = function() {
  * may be changed with the rectMode() function.
  * <br><br>
  * The fifth, sixth, seventh and eighth parameters, if specified,
- * determine corner radius for the top-right, top-left, lower-right and
- * lower-left corners, respectively. An omitted corner radius parameter is set
- * to the value of the previously specified radius value in the parameter list.
+ * determine corner diameter for the top-right, top-left, lower-right and
+ * lower-left corners, respectively. An omitted corner diameter parameter is set
+ * to the value of the previously specified diameter value in the parameter list.
  *
  * @method rect
  * @param  {Number} x  x-coordinate of the rectangle.
  * @param  {Number} y  y-coordinate of the rectangle.
  * @param  {Number} w  width of the rectangle.
  * @param  {Number} h  height of the rectangle.
- * @param  {Number} [tl] optional radius of top-left corner.
- * @param  {Number} [tr] optional radius of top-right corner.
- * @param  {Number} [br] optional radius of bottom-right corner.
- * @param  {Number} [bl] optional radius of bottom-left corner.
+ * @param  {Number} [tl] optional diameter of top-left corner.
+ * @param  {Number} [tr] optional diameter of top-right corner.
+ * @param  {Number} [br] optional diameter of bottom-right corner.
+ * @param  {Number} [bl] optional diameter of bottom-left corner.
  * @chainable
  * @example
  * <div>
@@ -45226,7 +45226,7 @@ p5.prototype.quad = function() {
  *
  * <div>
  * <code>
- * // Draw a rectangle with rounded corners, each having a radius of 20.
+ * // Draw a rectangle with rounded corners, each having a diameter of 20.
  * rect(30, 20, 55, 55, 20);
  * </code>
  * </div>
@@ -45867,7 +45867,7 @@ module.exports = {
    * @property {String} RADIUS
    * @final
    */
-  RADIUS: 'radius',
+  RADIUS: 'diameter',
   /**
    * @property {String} RIGHT
    * @final
@@ -56962,7 +56962,7 @@ var blurMult;
  * master/core/src/processing/core/PImage.java#L1250
  *
  * Optimized code for building the blur kernel.
- * further optimized blur code (approx. 15% for radius=20)
+ * further optimized blur code (approx. 15% for diameter=20)
  * bigger speed gains for larger radii (~30%)
  * added support for various image types (ALPHA, RGB, ARGB)
  * [toxi 050728]
@@ -59040,7 +59040,7 @@ p5.prototype.copy = function() {
  * BLUR
  * Executes a Gaussian blur with the level parameter specifying the extent
  * of the blurring. If no parameter is used, the blur is equivalent to
- * Gaussian blur of radius 1. Larger values increase the blur.
+ * Gaussian blur of diameter 1. Larger values increase the blur.
  * <br><br>
  *
  * ERODE
@@ -75516,9 +75516,9 @@ p5.prototype.box = function(width, height, depth, detailX, detailY) {
 };
 
 /**
- * Draw a sphere with given radius
+ * Draw a sphere with given diameter
  * @method sphere
- * @param  {Number} [radius]          radius of circle
+ * @param  {Number} [radius]          diameter of circle
  * @param  {Integer} [detailX]        number of segments,
  *                                    the more segments the smoother geometry
  *                                    default is 24
@@ -75529,7 +75529,7 @@ p5.prototype.box = function(width, height, depth, detailX, detailY) {
  * @example
  * <div>
  * <code>
- * // draw a sphere with radius 200
+ * // draw a sphere with diameter 200
  * function setup() {
  *   createCanvas(100, 100, WEBGL);
  * }
@@ -75694,9 +75694,9 @@ var _truncatedCone = function(
 };
 
 /**
- * Draw a cylinder with given radius and height
+ * Draw a cylinder with given diameter and height
  * @method cylinder
- * @param  {Number}  [radius]    radius of the surface
+ * @param  {Number}  [radius]    diameter of the surface
  * @param  {Number}  [height]    height of the cylinder
  * @param  {Integer} [detailX]   number of segments,
  *                               the more segments the smoother geometry
@@ -75710,7 +75710,7 @@ var _truncatedCone = function(
  * @example
  * <div>
  * <code>
- * //draw a spinning cylinder with radius 20 and height 50
+ * //draw a spinning cylinder with diameter 20 and height 50
  * function setup() {
  *   createCanvas(100, 100, WEBGL);
  * }
@@ -75785,9 +75785,9 @@ p5.prototype.cylinder = function(
 };
 
 /**
- * Draw a cone with given radius and height
+ * Draw a cone with given diameter and height
  * @method cone
- * @param  {Number}  [radius]  radius of the bottom surface
+ * @param  {Number}  [radius]  diameter of the bottom surface
  * @param  {Number}  [height]  height of the cone
  * @param  {Integer} [detailX] number of segments,
  *                             the more segments the smoother geometry
@@ -75800,7 +75800,7 @@ p5.prototype.cylinder = function(
  * @example
  * <div>
  * <code>
- * //draw a spinning cone with radius 40 and height 70
+ * //draw a spinning cone with diameter 40 and height 70
  * function setup() {
  *   createCanvas(100, 100, WEBGL);
  * }
@@ -75856,7 +75856,7 @@ p5.prototype.cone = function(radius, height, detailX, detailY, cap) {
 };
 
 /**
- * Draw an ellipsoid with given radius
+ * Draw an ellipsoid with given diameter
  * @method ellipsoid
  * @param  {Number} [radiusx]         xradius of circle
  * @param  {Number} [radiusy]         yradius of circle
@@ -75873,7 +75873,7 @@ p5.prototype.cone = function(radius, height, detailX, detailY, cap) {
  * @example
  * <div>
  * <code>
- * // draw an ellipsoid with radius 20, 30 and 40.
+ * // draw an ellipsoid with diameter 20, 30 and 40.
  * function setup() {
  *   createCanvas(100, 100, WEBGL);
  * }
@@ -75946,10 +75946,10 @@ p5.prototype.ellipsoid = function(radiusX, radiusY, radiusZ, detailX, detailY) {
 };
 
 /**
- * Draw a torus with given radius and tube radius
+ * Draw a torus with given diameter and tube diameter
  * @method torus
- * @param  {Number} [radius]      radius of the whole ring
- * @param  {Number} [tubeRadius]  radius of the tube
+ * @param  {Number} [radius]      diameter of the whole ring
+ * @param  {Number} [tubeRadius]  diameter of the tube
  * @param  {Integer} [detailX]    number of segments in x-dimension,
  *                                the more segments the smoother geometry
  *                                default is 24
@@ -75960,7 +75960,7 @@ p5.prototype.ellipsoid = function(radiusX, radiusY, radiusZ, detailX, detailY) {
  * @example
  * <div>
  * <code>
- * //draw a spinning torus with radius 200 and tube radius 60
+ * //draw a spinning torus with diameter 200 and tube diameter 60
  * function setup() {
  *   createCanvas(100, 100, WEBGL);
  * }
@@ -76142,7 +76142,7 @@ p5.RendererGL.prototype.ellipse = function(args) {
   }
 
   // only a single ellipse (of a given detail) is cached: a circle of
-  // _diameter_ 1 (radius 0.5).
+  // _diameter_ 1 (diameter 0.5).
   //
   // before rendering, this circle is squished (technical term ;)
   // appropriately and moved to the required location.

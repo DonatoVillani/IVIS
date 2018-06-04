@@ -1011,21 +1011,21 @@ declare class p5 {
    *   The way these parameters are interpreted, however, 
    *   may be changed with the rectMode() function.  The 
    *   fifth, sixth, seventh and eighth parameters, if 
-   *   specified, determine corner radius for the 
+   *   specified, determine corner diameter for the
    *   top-right, top-left, lower-right and lower-left 
-   *   corners, respectively. An omitted corner radius 
+   *   corners, respectively. An omitted corner diameter
    *   parameter is set to the value of the previously 
-   *   specified radius value in the parameter list.
+   *   specified diameter value in the parameter list.
    *
    *   @param x x-coordinate of the rectangle.
    *   @param y y-coordinate of the rectangle.
    *   @param w width of the rectangle.
    *   @param h height of the rectangle.
-   *   @param [tl] optional radius of top-left corner.
-   *   @param [tr] optional radius of top-right corner.
-   *   @param [br] optional radius of bottom-right 
+   *   @param [tl] optional diameter of top-left corner.
+   *   @param [tr] optional diameter of top-right corner.
+   *   @param [br] optional diameter of bottom-right
    *   corner.
-   *   @param [bl] optional radius of bottom-left corner.
+   *   @param [bl] optional diameter of bottom-left corner.
    *   @chainable
    */
   rect(x: number, y: number, w: number, h: number, tl?: number, tr?: number, br?: number, bl?: number): p5
@@ -1039,11 +1039,11 @@ declare class p5 {
    *   The way these parameters are interpreted, however, 
    *   may be changed with the rectMode() function.  The 
    *   fifth, sixth, seventh and eighth parameters, if 
-   *   specified, determine corner radius for the 
+   *   specified, determine corner diameter for the
    *   top-right, top-left, lower-right and lower-left 
-   *   corners, respectively. An omitted corner radius 
+   *   corners, respectively. An omitted corner diameter
    *   parameter is set to the value of the previously 
-   *   specified radius value in the parameter list.
+   *   specified diameter value in the parameter list.
    *
    *   @param x x-coordinate of the rectangle.
    *   @param y y-coordinate of the rectangle.
@@ -1279,7 +1279,7 @@ declare class p5 {
   readonly RADIANS: 'radians'
   readonly CORNER: 'corner'
   readonly CORNERS: 'corners'
-  readonly RADIUS: 'radius'
+  readonly RADIUS: 'diameter'
   readonly RIGHT: 'right'
   readonly LEFT: 'left'
   readonly CENTER: 'center'
@@ -3627,7 +3627,7 @@ declare class p5 {
    *   BLUR Executes a Gaussian blur with the level 
    *   parameter specifying the extent of the blurring. 
    *   If no parameter is used, the blur is equivalent to 
-   *   Gaussian blur of radius 1. Larger values increase 
+   *   Gaussian blur of diameter 1. Larger values increase
    *   the blur. 
    * 
    *  
@@ -6196,9 +6196,9 @@ declare class p5 {
   box(width?: number, Height?: number, depth?: number, detailX?: number, detailY?: number): p5
   
   /**
-   *   Draw a sphere with given radius
+   *   Draw a sphere with given diameter
    *
-   *   @param [radius] radius of circle
+   *   @param [radius] diameter of circle
    *   @param [detailX] number of segments, the more 
    *   segments the smoother geometry default is 24
    *   @param [detailY] number of segments, the more 
@@ -6208,9 +6208,9 @@ declare class p5 {
   sphere(radius?: number, detailX?: number, detailY?: number): p5
   
   /**
-   *   Draw a cylinder with given radius and height
+   *   Draw a cylinder with given diameter and height
    *
-   *   @param [radius] radius of the surface
+   *   @param [radius] diameter of the surface
    *   @param [height] height of the cylinder
    *   @param [detailX] number of segments, the more 
    *   segments the smoother geometry default is 24
@@ -6226,9 +6226,9 @@ declare class p5 {
   cylinder(radius?: number, height?: number, detailX?: number, detailY?: number, bottomCap?: boolean, topCap?: boolean): p5
   
   /**
-   *   Draw a cone with given radius and height
+   *   Draw a cone with given diameter and height
    *
-   *   @param [radius] radius of the bottom surface
+   *   @param [radius] diameter of the bottom surface
    *   @param [height] height of the cone
    *   @param [detailX] number of segments, the more 
    *   segments the smoother geometry default is 24
@@ -6240,7 +6240,7 @@ declare class p5 {
   cone(radius?: number, height?: number, detailX?: number, detailY?: number, cap?: boolean): p5
   
   /**
-   *   Draw an ellipsoid with given radius
+   *   Draw an ellipsoid with given diameter
    *
    *   @param [radiusx] xradius of circle
    *   @param [radiusy] yradius of circle
@@ -6258,10 +6258,10 @@ declare class p5 {
   ellipsoid(radiusx?: number, radiusy?: number, radiusz?: number, detailX?: number, detailY?: number): p5
   
   /**
-   *   Draw a torus with given radius and tube radius
+   *   Draw a torus with given diameter and tube diameter
    *
-   *   @param [radius] radius of the whole ring
-   *   @param [tubeRadius] radius of the tube
+   *   @param [radius] diameter of the whole ring
+   *   @param [tubeRadius] diameter of the tube
    *   @param [detailX] number of segments in 
    *   x-dimension, the more segments the smoother 
    *   geometry default is 24
