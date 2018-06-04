@@ -9,6 +9,8 @@
 var canvasHeight = 1000;
 var canvasWidth = 2000;
 
+const ellipseDiameterZoomFactor = (canvasHeight/300);
+
 const ampFactor = 0.8;
 
 const interactionThreshold = canvasHeight/10*5;
@@ -25,7 +27,9 @@ const circlesY = canvasHeight/2;
 // ===================================================
 
 
-var amps = [];
+var interactionCanvas;
+
+var canvasDrawing = [];
 var cnv;
 
 var distances = [];
@@ -37,6 +41,11 @@ var max= new Array(sampleRate/2);//array that contains the half of the sampleRat
 var maximum;//the maximum amplitude of the max array
 var frequency;//the frequency in hertz
 
+var spectrum = [];
+
+var centroids = [];
+
+var textCounter = 0;
 
 function preload() {
     soundFormats('mp3', 'ogg');
@@ -49,8 +58,9 @@ function setup() {
     createCanvas(canvasWidth,canvasHeight);
     background(10);
 
-    //interactionCanvas = createCanvas(canvasWidth,canvasHeight);
-    //interactionCanvas.background(0,0,0,0);
+    interactionCanvas = createGraphics(300,100);
+    interactionCanvas.background(0,0,0,0);
+
 
     fft = new p5.FFT();
     mySound.amp(ampFactor);
@@ -60,31 +70,55 @@ function setup() {
 function draw() {
 
 
-    var spectrum = fft.analyze();
+    spectrum = fft.analyze();
 
 
     for (var i = 0; i< spectrum.length; i++){
         // the whole frequency spectrum in the image - x axis.. Not really useful in this case because "klangschalen"s frequencies conentrate from 0 to 2000 hz..
         var x = map(i, 0, spectrum.length, 0, canvasWidth * horizontalZoomFactor);
 
-        //console.log(x);
-        var scaledAmplitude = spectrum[i] *1.2;
 
-        if (interactiveCircles[i] == null || scaledAmplitude > interactiveCircles[i].maxAmplitude){
-            interactiveCircles[i] = {x:x, y:circlesY, diameter:getDiameter(scaledAmplitude), maxAmplitude:scaledAmplitude}
+
+        //---------- also Interesting visualization of energy
+        //var amplitude = fft.getEnergy(i);
+        //console.log(amplitude+" AMP at i");
+        //console.log(fft.getEnergy(i)+" ENERGY at i");
+
+        var amplitude = spectrum[i];
+
+
+        //Opportunity of showing the dominant mean center of the soundfile.. for example as vertical line..
+        //centroids.push(fft.getCentroid());
+        //console.log(fft.getCentroid());
+
+        if (interactiveCircles[i] == null || amplitude > interactiveCircles[i].maxAmplitude){
+            interactiveCircles[i] = {x:x, y:circlesY, diameter:getScaledDiameter(amplitude,ellipseDiameterZoomFactor), maxAmplitude:amplitude}
         }
 
         var distance = dist(mouseX, mouseY, interactiveCircles[i].x, interactiveCircles[i].y);
         if(interactiveCircles[i].diameter > interactionThreshold && distance < (interactiveCircles[i].diameter/2)){
-            console.log(i+ " DIST "+ distance);
-            stroke(0);
-            textSize(50);
-            text('a', interactiveCircles[i].x, interactiveCircles[i].y);
-            line(interactiveCircles[i].x, interactiveCircles[i].y, mouseX, mouseY);
+            //console.log(i+ " DIST "+ distance);
+
+
+
+            var frequencyHertz = i * 44100 / fft.bins;
+            console.log("MIDI" + freqToMidi(frequencyHertz));
+            //console.log(freqToMidi(interactiveCircles[i].maxAmplitude));
+            console.log(i * 44100 / fft.bins);//freq = i_max * Fs / N)
+            interactionCanvas.fill(255);
+            interactionCanvas.textSize(30);
+            interactionCanvas.text("LOL");
+            //text(getMusicalNoteFromMidi(freqToMidi(frequencyHertz)) +" "+ frequencyHertz+" Hz", canvasWidth-100, 100*textCounter);
+            stroke(0,i%4*i*20,i%4*i*20);
+            //line(interactiveCircles[i].x, interactiveCircles[i].y, mouseX, mouseY);
             //fill(255);
             //ellipse(interactiveCircles[i].x,interactiveCircles[i].y,interactiveCircles[i].diameter,interactiveCircles[i].diameter);
             //console.log(interactiveCircles[i]);
+
+        }else{
+            interactionCanvas.background(0);
         }
+        image(interactionCanvas, 0, 0);
 
 
         //image(interactionCanvas, 0, 0);
@@ -99,15 +133,16 @@ function draw() {
         noFill();
         colorMode(RGB,100);
         //stroke(240,220-(scaledAmplitude/2),15,9);
-        stroke(100,100-(scaledAmplitude/4),15,8);
+        stroke(100,100-(amplitude/4),15,8);
         //console.log("spectrum iteration: "+ i + "with ampl:" + scaledAmplitude);
 
 
 
         //manual but working
         //ellipse(((canvasWidth/100)*i), canvasHeight/2, scaledAmplitude*(canvasHeight/400), scaledAmplitude*(canvasHeight/400));
-        if(x < canvasWidth)
-        ellipse(x, circlesY, getDiameter(scaledAmplitude), getDiameter(scaledAmplitude));
+        if(x < canvasWidth) {
+            ellipse(x, circlesY, getScaledDiameter(amplitude,ellipseDiameterZoomFactor), getScaledDiameter(amplitude,ellipseDiameterZoomFactor));
+        }
 
 
         //getMaxAmp per Band
@@ -129,103 +164,6 @@ function draw() {
     endShape();
 }
 
-function keyPressed(){
-    printing = true;
-    var textCounter = 0;
-    var inc = 0.01;
-    if(keyCode == UP && smoothing < 1-inc) smoothing += inc;
-    if(keyCode == DOWN && smoothing > inc) smoothing -= inc;
-    if (key == 's') {
-        save("normal.png");
-        saveHiRes(2);
-        exit();
-    }
-    if(key=='p'){
-        var lastBand = 0;
-        var textY = (height/2)-50;
-        textSize(128);
-        textFont(mandali);
-        for(var i =0;i<amps.length;i++){
-            if(amps[i]>200){
-                textCounter +=1;
-                System.out.println(i+" scaledAmp: "+amps[i]+" with Hertz of: "+fft.indexToFreq(i));
-                fill(100,30);
-                textAlign(LEFT,BOTTOM);
-                //text((int)(fft.indexToFreq(i))+" Hz",(width/100)*i,((i-lastBand<5?textY+200:textY)/4)*3);
-                text((int)(fft.indexToFreq(i))+" Hz",(width/8*7),100+(150*textCounter));
-                var midi= 69+12*(log(fft.indexToFreq(i)/440)/log(2));// formula that transform frequency to midi numbers
-                var n= int (midi);//cast to int
-                var note ="";
-                //the octave have 12 tones and semitones. So, if we get a modulo of 12, we get the note names independently of the frequency
-                if (n%12==9)
-                {
-                    note = ("a");
-                }
-
-                if (n%12==10)
-                {
-                    note = ("a#");
-                }
-
-                if (n%12==11)
-                {
-                    note = ("b");
-                }
-
-                if (n%12==0)
-                {
-                    note = ("c");
-                }
-
-                if (n%12==1)
-                {
-                    note = ("c#");
-                }
-
-                if (n%12==2)
-                {
-                    note = ("d");
-                }
-
-                if (n%12==3)
-                {
-                    note = ("d#");
-                }
-
-                if (n%12==4)
-                {
-                    note = ("e");
-                }
-
-                if (n%12==5)
-                {
-                    note = ("f");
-                }
-
-                if (n%12==6)
-                {
-                    note = ("f#");
-                }
-
-                if (n%12==7)
-                {
-                    note = ("g");
-                }
-
-                if (n%12==8)
-                {
-                    note = ("g#");
-                }
-                fill(100,70,0,90);
-                textAlign(CENTER,CENTER);
-                text(note,map(i, 0, specSize, 0, width*horizontalZoomFactor),((i-lastBand<5?textY+100:textY)));
-                lastBand = i;
-            }
-        }
-
-        save("image.png");
-    }
-}
 
 function findNote() {
     var frequency = 0.0;
@@ -243,11 +181,79 @@ function findNote() {
 }
 
 
-function getDiameter(scaledAmplitude){
-    return scaledAmplitude*(canvasHeight/400);
+function getScaledDiameter(amplitude,ellipseDiameterZoomFactor){
+    return amplitude*ellipseDiameterZoomFactor;
 }
 
 /*
 function getCircleXCoordinate(i, spectrum.length){
     return map(i, 0, spectrum.length, 0, width * horizontalZoomFactor);
 }*/
+
+
+function getMusicalNoteFromMidi(midi){
+    var n = midi;
+    var note ="";
+    //the octave have 12 tones and semitones. So, if we get a modulo of 12, we get the note names independently of the frequency
+    if (n%12==9)
+    {
+        note = ("a");
+    }
+
+    if (n%12==10)
+    {
+        note = ("a#");
+    }
+
+    if (n%12==11)
+    {
+        note = ("b");
+    }
+
+    if (n%12==0)
+    {
+        note = ("c");
+    }
+
+    if (n%12==1)
+    {
+        note = ("c#");
+    }
+
+    if (n%12==2)
+    {
+        note = ("d");
+    }
+
+    if (n%12==3)
+    {
+        note = ("d#");
+    }
+
+    if (n%12==4)
+    {
+        note = ("e");
+    }
+
+    if (n%12==5)
+    {
+        note = ("f");
+    }
+
+    if (n%12==6)
+    {
+        note = ("f#");
+    }
+
+    if (n%12==7)
+    {
+        note = ("g");
+    }
+
+    if (n%12==8)
+    {
+        note = ("g#");
+    }
+
+    return note;
+}
