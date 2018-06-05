@@ -9,7 +9,7 @@
 var canvasHeight = 1000;
 var canvasWidth = 2000;
 var upLoad = false;
-var mySound, uploadBtn, playPauseBtn, uploadedAudio, uploadAnim;
+var mySound, uploadBtn, playPauseBtn, downloadBtn, uploadedAudio, uploadAnim;
 
 const ellipseDiameterZoomFactor = (canvasHeight/300);
 
@@ -61,12 +61,12 @@ function preload() {
 
 function uploaded(file){
     upLoad = true;
-    uploadedAudio = loadSound(file.data, uploadedAudioPlay);
-    setup();
+    uploadedAudio = loadSound(file.data, resetAndPlay);
+
 }
 
 
-function uploadedAudioPlay(audioFile){
+function resetAndPlay(audioFile){
     upLoad = false;
     if(mySound.isPlaying()){
         mySound.pause();
@@ -74,13 +74,15 @@ function uploadedAudioPlay(audioFile){
 
     mySound = audioFile;
     mySound.play();
+    setup();
 }
 
 
 
 function setup() {
 
-    createCanvas(canvasWidth,canvasHeight);
+    createCanvas(windowWidth,windowHeight);
+  //  createCanvas(canvasWidth,canvasHeight);
 
     uploadAnim = select('#uploading-animation');
 
@@ -96,8 +98,14 @@ function setup() {
 
     playPauseBtn.mousePressed(toggleAudio);
 
+    downloadBtn = createButton("Download Image");
 
-    background(10);
+    downloadBtn.addClass("download-btn");
+
+    downloadBtn.mousePressed(saveImage);
+
+
+    background(0);
 
     interactionCanvas = createGraphics(canvasWidth,100);
 
@@ -117,7 +125,7 @@ function draw() {
     } else {
         uploadAnim.removeClass('is-visible');
     }
-    interactionCanvas.background(10);
+    interactionCanvas.background(0);
     if (currentHoveringCircle != null) {
         interactionCanvas.fill(100);
         interactionCanvas.textSize(12);
@@ -411,3 +419,32 @@ function draw() {
      function filterAmplitude(element){
          element.amplitude > interactionThreshold;
      }
+
+function saveImage() {
+    saveCanvas('KlangschaleImage', 'jpg');
+}
+
+function selectFunction() {
+    var dropdown = document.getElementById("dropdown");
+
+    if (dropdown.selectedIndex == 0) {
+        var sound1 = loadSound('assets/klangschale_gr7_sc37307.mp3', resetAndPlay);
+
+
+    } else if (dropdown.selectedIndex == 1) {
+        var sound2 = loadSound('assets/klangschale_gr10_sc37310.mp3', resetAndPlay);
+
+    } else if (dropdown.selectedIndex == 2) {
+        var sound3 = loadSound('assets/klangschale1.mp3', resetAndPlay);
+
+
+    } else if (dropdown.selectedIndex == 3) {
+        var sound4 = loadSound('assets/klangschale2.mp3', resetAndPlay);
+
+    } else if (dropdown.selectedIndex == 4) {
+        var sound4 = loadSound('assets/klangschale3.mp3', resetAndPlay);
+
+    } else if (dropdown.selectedIndex == 5) {
+        var sound4 = loadSound('assets/klangschale4.mp3', resetAndPlay);
+    }
+}
