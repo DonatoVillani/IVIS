@@ -120,11 +120,13 @@ function draw() {
     interactionCanvas.background(10);
     if (currentHoveringCircle != null) {
         interactionCanvas.fill(100);
-        interactionCanvas.textSize(14);
+        interactionCanvas.textSize(12);
         interactionCanvas.textAlign(CENTER);
-        interactionCanvas.text(getMusicalNoteFromMidi(currentHoveringCircle.midi)+ currentHoveringCircle.x, (currentHoveringCircle.x / 2), 40);
+        interactionCanvas.text("Ton: "+ getMusicalNoteFromMidi(currentHoveringCircle.midi), (currentHoveringCircle.x / 2), 35);
+        interactionCanvas.text(round(currentHoveringCircle.frequency)+ "Hz",(currentHoveringCircle.x / 2), 45);
+        //interactionCanvas.text("Frequenz des Universums",( );
         stroke(0);
-        line(currentHoveringCircle.x, currentHoveringCircle.y, mouseX, mouseY);
+        //line(currentHoveringCircle.x, currentHoveringCircle.y, mouseX, mouseY);
         currentHoveringCircle = null;
     }
     else {
@@ -166,9 +168,14 @@ function draw() {
         }
 
 
+
+
         var distance = dist(mouseX, mouseY, maxAmplitudeCircles[i].x, maxAmplitudeCircles[i].y);
         if (maxAmplitudeCircles[i].diameter > interactionThreshold && distance < (maxAmplitudeCircles[i].diameter / 2)) {
             //console.log(i+ " DIST "+ distance);
+
+
+
 
             if ((maxAmplitudeCircles[i + 1].x - maxAmplitudeCircles[i].x) > 5) {
                 currentHoveringCircle = maxAmplitudeCircles[i];
@@ -177,7 +184,7 @@ function draw() {
             //interactionCanvas.stroke(0);
             //interactionCanvas.line(maxAmplitudeCircles[i].x,maxAmplitudeCircles[i].y,mouseX,mouseY);
 
-            var frequencyHertz = i * 44100 / fft.bins;
+            var frequencyHertz = i * (44100 / fft.bins / 2);
             maxAmplitudeCircles[i].frequency = frequencyHertz;
             maxAmplitudeCircles[i].midi = freqToMidi(frequencyHertz);
 
@@ -198,6 +205,8 @@ function draw() {
             //console.log(maxAmplitudeCircles[i]);
 
         }
+
+
 
 
         //image(interactionCanvas, 0, 0);
@@ -231,12 +240,10 @@ function draw() {
             //getMaxAmp per Band
             //if(scaledAmplitude>amps[i]){amps[i]=scaledAmplitude;}
 
+    interactiveCircles = maxAmplitudeCircles.filter(filterAmplitude);
+    console.log("INTERACTIVECIRCLES");
+    console.log(interactiveCircles);
 
-    if (interactionThreshold < maxAmplitudeCircles[i]) {
-        //if ((maxAmplitudeCircles[i].x - maxAmplitudeCircles[i - 1].x) > 10) {
-        interactiveCircles.push(maxAmplitudeCircles[i]);
-        //}
-    }
     var groupedCircles = getGroupedCircles(interactiveCircles);
 
     //var reducedCircles = reduceGroupedCircles(groupedCircles);
@@ -391,7 +398,7 @@ function draw() {
                  var maxElementInGroupIndex;
                 for(var j=0;j<groupedCircles.length;j++){
                     if(groupedCircles[i][j].amplitude > maxAmp){
-                       maxAmp =  groupedCircles[i][j].amplitude;
+                       maxAmp = groupedCircles[i][j].amplitude;
                        maxElementInGroupIndex = j;
                     }
                 }
@@ -399,4 +406,8 @@ function draw() {
              }
          }
          return groupedCircles;
+     }
+
+     function filterAmplitude(element){
+         element.amplitude > interactionThreshold;
      }
