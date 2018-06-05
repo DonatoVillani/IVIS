@@ -49,6 +49,10 @@ var centroids = [];
 
 var textCounter = 0;
 
+var currentHoveringCircle = null;
+
+var graphicsBuffer = [];
+
 function preload() {
     mySound = loadSound('assets/klangschale_gr7_sc37307.mp3');
 }
@@ -91,10 +95,10 @@ function setup() {
     playPauseBtn.mousePressed(toggleAudio);
 
 
-    background(50);
+    background(10);
 
-    interactionCanvas = createGraphics(300,100);
-    interactionCanvas.background(0,0,0,0);
+    interactionCanvas = createGraphics(windowWidth,100);
+
 
 
     fft = new p5.FFT();
@@ -104,12 +108,28 @@ function setup() {
 
 function draw() {
 
+
     //Add a loading animation for the uploaded track
     if (upLoad) {
         uploadAnim.addClass('is-visible');
     } else {
         uploadAnim.removeClass('is-visible');
     }
+    interactionCanvas.background(10);
+    if(currentHoveringCircle != null){
+        interactionCanvas.fill(100);
+        interactionCanvas.textSize(14);
+        interactionCanvas.text(getMusicalNoteFromMidi(currentHoveringCircle.midi), currentHoveringCircle.x,50);
+        //line(currentHoveringCircle.x,currentHoveringCircle.y,mouseX,mouseY);
+        currentHoveringCircle=null;
+    }
+    else{
+        //redrawGraphicsBuffer();
+    }
+    image(interactionCanvas, 0, 0);
+
+
+
 
 
     spectrum = fft.analyze();
@@ -134,22 +154,29 @@ function draw() {
         //console.log(fft.getCentroid());
 
         if (interactiveCircles[i] == null || amplitude > interactiveCircles[i].maxAmplitude){
-            interactiveCircles[i] = {x:x, y:circlesY, diameter:getScaledDiameter(amplitude,ellipseDiameterZoomFactor), maxAmplitude:amplitude}
+
+            interactiveCircles[i] = {x:x, y:circlesY, diameter:getScaledDiameter(amplitude,ellipseDiameterZoomFactor), maxAmplitude:amplitude, midi:null, frequency:null}
         }
 
         var distance = dist(mouseX, mouseY, interactiveCircles[i].x, interactiveCircles[i].y);
         if(interactiveCircles[i].diameter > interactionThreshold && distance < (interactiveCircles[i].diameter/2)){
             //console.log(i+ " DIST "+ distance);
-
-
+            currentHoveringCircle = interactiveCircles[i];
+            //interactionCanvas.stroke(0);
+            //interactionCanvas.line(interactiveCircles[i].x,interactiveCircles[i].y,mouseX,mouseY);
 
             var frequencyHertz = i * 44100 / fft.bins;
-            console.log("MIDI" + freqToMidi(frequencyHertz));
+            interactiveCircles[i].frequency = frequencyHertz;
+            interactiveCircles[i].midi = freqToMidi(frequencyHertz);
+
+            console.log("MIDI" + interactiveCircles[i].midi);
+            console.log(interactiveCircles[i].frequency);//freq = i_max * Fs / N)
+
             //console.log(freqToMidi(interactiveCircles[i].maxAmplitude));
-            console.log(i * 44100 / fft.bins);//freq = i_max * Fs / N)
-            interactionCanvas.fill(255);
-            interactionCanvas.textSize(30);
-            interactionCanvas.text("LOL");
+
+            //interactionCanvas.fill(0);
+            //interactionCanvas.textSize(30);
+            //interactionCanvas.text("LOL");
             //text(getMusicalNoteFromMidi(freqToMidi(frequencyHertz)) +" "+ frequencyHertz+" Hz", canvasWidth-100, 100*textCounter);
             stroke(0,i%4*i*20,i%4*i*20);
             //line(interactiveCircles[i].x, interactiveCircles[i].y, mouseX, mouseY);
@@ -158,9 +185,10 @@ function draw() {
             //console.log(interactiveCircles[i]);
 
         }else{
-            interactionCanvas.background(0);
+            //interactionCanvas.background(255);
+
         }
-       // image(interactionCanvas, 0, 0);
+
 
 
         //image(interactionCanvas, 0, 0);
@@ -172,17 +200,20 @@ function draw() {
        // var h = -height + map(spectrum[i], 0, 255, height, 0);
         //rect(x, height, width / spectrum.length, h )
         //strokeWeight(4);
-        noFill();
-        colorMode(RGB,100);
-        //stroke(240,220-(scaledAmplitude/2),15,9);
-        stroke(100,100-(amplitude/4),15,8);
-        //console.log("spectrum iteration: "+ i + "with ampl:" + scaledAmplitude);
 
+        //stroke(240,220-(scaledAmplitude/2),15,9);
+
+        //console.log("spectrum iteration: "+ i + "with ampl:" + scaledAmplitude);
+        noFill();
+        colorMode(RGB, 100);
+        stroke(100, 100 - (amplitude / 4), 15, 8);
 
 
         //manual but working
         //ellipse(((canvasWidth/100)*i), canvasHeight/2, scaledAmplitude*(canvasHeight/400), scaledAmplitude*(canvasHeight/400));
         if(x < canvasWidth) {
+            //IN CASE WE NEED TO SAVE ALL CIRCLES FOR LATER REDRAWING
+            // graphicsBuffer.push({x:x, y:circlesY, diameter:getScaledDiameter(amplitude,ellipseDiameterZoomFactor), amplitude:amplitude})
             ellipse(x, circlesY, getScaledDiameter(amplitude,ellipseDiameterZoomFactor), getScaledDiameter(amplitude,ellipseDiameterZoomFactor));
         }
 
@@ -191,6 +222,7 @@ function draw() {
         //if(scaledAmplitude>amps[i]){amps[i]=scaledAmplitude;}
 
     }
+
 
   /*  var waveform = fft.waveform();
      noFill();
@@ -310,4 +342,16 @@ function toggleAudio() {
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+}
+
+//This is meant for the case if we need to save all the circles to a datastructure and redraw the current state
+function redrawGraphicsBuffer() {
+    background(10);
+    for (var i = 0; i < graphicsBuffer.length; i++) {
+        console.log(graphicsBuffer.length);
+        noFill();
+        colorMode(RGB, 100);
+        stroke(100, 100 - (graphicsBuffer[i].amplitude / 4), 15, 8);
+        ellipse(graphicsBuffer[i].x, graphicsBuffer[i].y, graphicsBuffer[i].diameter, graphicsBuffer[i].diameter);
+    }
 }
