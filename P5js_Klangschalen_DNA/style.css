@@ -14,30 +14,27 @@ body {
     font-size: 0.85rem;
 }
 
-
-.content {
-    padding: 3em 0;
-}
-
-.content.main {
-    min-height: 100vh;
-    padding: 0;
-}
-
-.canvas-wrapper {
-    position: relative;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
 canvas {
     position: absolute;
     left:50%;
     top: 50%;
-    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
+}
+
+/* Header */
+.klangschalen-header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    padding: 2vmax;
+    z-index: 1;
 }
 
 .p5_loading {
@@ -110,9 +107,6 @@ canvas {
     content: 'Upload your track';
     display: inline-block;
     left: 2vmax;
-    outline: none;
-    white-space: nowrap;
-    -webkit-user-select: none;
     cursor: pointer;
 }
 
@@ -124,4 +118,35 @@ canvas {
 }
 
 
+.download-btn{
+    padding: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: currentColor;
+    position: absolute;
+    bottom: 2vmax;
+    border: 1px solid;
+    width: 255px;
+}
 
+.download-btn{
+    background: transparent;
+    color: currentColor;
+    left: 40vmax;
+}
+
+
+
+.styled-select select {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    height: 29px;
+    padding: 5px; /* If you add too much padding here, the options won't show in IE */
+    width: 268px;
+}
+
+.orange { background-color: #4d514c; }
+
+.green select   { color: #fff; }

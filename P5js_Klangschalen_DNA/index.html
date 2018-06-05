@@ -6,13 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>IVIS Projekt FHNW FS 18</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script>
         document.documentElement.className = 'js';
     </script>
 </head>
+<body>
+<main class="site-wrapper">
+    <header class="klangschalen-header">
+
+        <div class="styled-select select orange green">
+            <select id="dropdown">
+                <option>Klangschale 1</option>
+                <option>Klangschale 2</option>
+                <option>Klangschale 3</option>
+                <option>Klangschale 4</option>
+                <option>Klangschale 5</option>
+                <option>Klangschale 6</option>
+            </select>
+            <button type="button" onclick="selectFunction()">Play</button>
+        </div>
+
+    </header>
 
     <div class="content main">
-        <div class="canvas-wrapper">
             <div id="p5_loading" class="p5_loading">
                 <div class="p5_loading__inner">
                     <span></span>
@@ -23,15 +40,13 @@
                     <span></span>
                 </div>
             </div>
-            <canvas id="webglcanvas"></canvas>
-        </div>
     </div>
+
 </main>
 <script src="p5/p5.min.js"></script>
 <script src="p5/addons/p5.dom.js"></script>
 <script src="p5/addons/p5.sound.js"></script>
 <script src="sketch.js"></script>
-
 </body>
-
 </html>
+
