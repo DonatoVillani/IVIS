@@ -23,6 +23,20 @@ canvas {
     height: 100%;
 }
 
+/* Header */
+.klangschalen-header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    padding: 2vmax;
+    z-index: 1;
+}
+
 .p5_loading {
     background: black;
     position: fixed;
@@ -78,7 +92,7 @@ canvas {
 
 .upload-btn::before,
 .toggle-btn {
-    padding: 50px;
+    padding: 10px;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -105,7 +119,7 @@ canvas {
 
 
 .download-btn{
-    padding: 50px;
+    padding: 10px;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -124,3 +138,15 @@ canvas {
 
 
 
+.styled-select select {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    height: 29px;
+    padding: 5px; /* If you add too much padding here, the options won't show in IE */
+    width: 268px;
+}
+
+.orange { background-color: #4d514c; }
+
+.green select   { color: #fff; }
