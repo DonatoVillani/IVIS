@@ -9,7 +9,7 @@
 var canvasHeight = 1000;
 var canvasWidth = 2000;
 var upLoad = false;
-var mySound, uploadBtn, playPauseBtn, uploadedAudio, uploadAnim;
+var mySound, uploadBtn, playPauseBtn, downloadBtn, uploadedAudio, uploadAnim;
 
 const ellipseDiameterZoomFactor = (canvasHeight/300);
 
@@ -76,6 +76,7 @@ function setup() {
 
     createCanvas(windowWidth,windowHeight);
 
+
     uploadAnim = select('#uploading-animation');
 
     playPauseBtn = createButton("Play / Pause");
@@ -84,14 +85,20 @@ function setup() {
 
     uploadBtn.addClass("upload-btn");
 
-    uploadBtn.addClass("upload-btn");
-
     playPauseBtn.addClass("toggle-btn");
 
     playPauseBtn.mousePressed(toggleAudio);
 
+    downloadBtn = createButton("Download Image");
 
-    background(50);
+    downloadBtn.addClass("download-btn");
+
+    downloadBtn.mousePressed(saveImage);
+
+
+
+
+    background(0);
 
     interactionCanvas = createGraphics(300,100);
     interactionCanvas.background(0,0,0,0);
@@ -306,6 +313,10 @@ function toggleAudio() {
     } else {
         mySound.play();
     }
+}
+
+function saveImage() {
+    saveCanvas('myCanvas', 'jpg');
 }
 
 function windowResized() {

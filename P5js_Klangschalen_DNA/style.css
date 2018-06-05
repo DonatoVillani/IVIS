@@ -14,27 +14,10 @@ body {
     font-size: 0.85rem;
 }
 
-
-.content {
-    padding: 3em 0;
-}
-
-.content.main {
-    min-height: 100vh;
-    padding: 0;
-}
-
-.canvas-wrapper {
-    position: relative;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
 canvas {
     position: absolute;
     left: 50%;
     top: 50%;
-    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
@@ -95,7 +78,7 @@ canvas {
 
 .upload-btn::before,
 .toggle-btn {
-    padding: 10px;
+    padding: 50px;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -110,9 +93,6 @@ canvas {
     content: 'Upload your track';
     display: inline-block;
     left: 2vmax;
-    outline: none;
-    white-space: nowrap;
-    -webkit-user-select: none;
     cursor: pointer;
 }
 
@@ -121,6 +101,25 @@ canvas {
     background: transparent;
     color: currentColor;
     right: 2vmax;
+}
+
+
+.download-btn{
+    padding: 50px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: currentColor;
+    position: absolute;
+    bottom: 2vmax;
+    border: 1px solid;
+    width: 255px;
+}
+
+.download-btn{
+    background: transparent;
+    color: currentColor;
+    left: 40vmax;
 }
 
 
