@@ -34,7 +34,8 @@ var soundMP3Paths = [];
 
 var interactionCanvas;
 
-var canvasDrawing = [];
+var mainCanvas;
+
 var cnv;
 
 var distances = [];
@@ -60,6 +61,16 @@ var currentHoveringCircle = null;
 
 var graphicsBuffer = [];
 
+var isInteracting = false;
+
+var lastInteractedCircle = null;
+
+var needToRedraw = false;
+
+var hoveringIndices = [];
+
+
+
 function preload() {
     //mySound = loadSound('assets/klangschale_gr7_sc37307.mp3');
     //mySound = loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay());
@@ -80,6 +91,7 @@ function resetAndPlay(audioFile){
     mySound = audioFile;
     mySound.amp(ampFactor);
     background(0);
+    graphicsBuffer = new Array(fft.bins);
     mySound.play();
 }
 
@@ -94,7 +106,8 @@ function setup() {
     soundMP3Paths[4]= 'assets/klangschale3.mp3';
     soundMP3Paths[5]= 'assets/klangschale4.mp3';
 
-    createCanvas(windowWidth,windowHeight);
+    cnv = createCanvas(windowWidth,windowHeight);
+
   //  createCanvas(canvasWidth,canvasHeight);
 
     uploadAnim = select('#uploading-animation');
@@ -122,13 +135,21 @@ function setup() {
     background(0);
 
     fft = new p5.FFT();
+
     interactionCanvas = createGraphics(canvasWidth,100);
+    mainCanvas = createGraphics(windowWidth,windowHeight);
 
 
 
     mySound = loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay);
 }
 
+function redrawGraphicsBuffer() {
+    background(0);
+    for (var i = 0; i < graphicsBuffer.length; i++) {
+        redrawCircle(graphicsBuffer[i]);
+    }
+}
 function draw() {
 
 
@@ -138,22 +159,52 @@ function draw() {
     } else {
         uploadAnim.removeClass('is-visible');
     }
-    interactionCanvas.background(0);
+
+
+    if(mouseY>windowHeight/4){
+
+        var filteredCircles = maxAmplitudeCircles.filter(function (el) {
+            return el.diameter >= interactionThreshold;
+        });
+
+        var closestCircleIndex = findClosest(mouseX,filteredCircles);
+
+        currentHoveringCircle = maxAmplitudeCircles[closestCircleIndex];
+        isInteracting = true;
+        //console.log("CURRENT HOVERING "+closestCircleIndex);
+    }else{
+        currentHoveringCircle = null;
+        interactionCanvas.background(0);
+        image(interactionCanvas, 0, 0);
+        if(needToRedraw){redrawGraphicsBuffer();needToRedraw = false;}
+    }
+
+
     if (currentHoveringCircle != null) {
+        interactionCanvas.background(0);
+        isInteracting = true;
         interactionCanvas.fill(100);
         interactionCanvas.textSize(12);
         interactionCanvas.textAlign(CENTER);
         interactionCanvas.text("Ton: "+ getMusicalNoteFromMidi(currentHoveringCircle.midi), (currentHoveringCircle.x / 2), 35);
         interactionCanvas.text(round(currentHoveringCircle.frequency)+ "Hz",(currentHoveringCircle.x / 2), 45);
+        image(interactionCanvas, 0, 0);
         //interactionCanvas.text("Frequenz des Universums",( );
         stroke(0);
         //line(currentHoveringCircle.x, currentHoveringCircle.y, mouseX, mouseY);
-        currentHoveringCircle = null;
+
+        if(lastInteractedCircle == null || lastInteractedCircle.index != currentHoveringCircle.index) {
+            background(0);
+            redrawCircle(graphicsBuffer[currentHoveringCircle.index]);
+        }
+        lastInteractedCircle = currentHoveringCircle;
+        //console.log("MAXAMPLENGTH "+maxAmplitudeCircles.length);
+        //console.log("BUFFER LENGTH"+graphicsBuffer.length);
+        //console.log(graphicsBuffer[currentHoveringCircle.index].length);
+        needToRedraw = true;
+        isInteracting = false;
     }
-    else {
-        //redrawGraphicsBuffer();
-    }
-    image(interactionCanvas, 0, 0);
+
 
 
     spectrum = fft.analyze();
@@ -176,15 +227,16 @@ function draw() {
         //centroids.push(fft.getCentroid());
         //console.log(fft.getCentroid());
 
-        if (maxAmplitudeCircles[i] == null || amplitude > maxAmplitudeCircles[i].maxAmplitude) {
+        if (maxAmplitudeCircles[i] == null || amplitude > maxAmplitudeCircles[i].amplitude) {
 
             maxAmplitudeCircles[i] = {
                 x: x,
                 y: circlesY,
                 diameter: getScaledDiameter(amplitude, ellipseDiameterZoomFactor),
-                maxAmplitude: amplitude,
+                amplitude: amplitude,
                 midi: null,
-                frequency: null
+                frequency: null,
+                index: i
             }
         }
 
@@ -192,15 +244,23 @@ function draw() {
 
 
         var distance = dist(mouseX, mouseY, maxAmplitudeCircles[i].x, maxAmplitudeCircles[i].y);
-        if (maxAmplitudeCircles[i].diameter > interactionThreshold && distance < (maxAmplitudeCircles[i].diameter / 2)) {
+
+
+
+
+
+
+        if (maxAmplitudeCircles[i].diameter > interactionThreshold && distance < (maxAmplitudeCircles[i].diameter / 4)) {
             //console.log(i+ " DIST "+ distance);
 
 
 
 
-            if ((maxAmplitudeCircles[i + 1].x - maxAmplitudeCircles[i].x) > 5) {
-                currentHoveringCircle = maxAmplitudeCircles[i];
-            }
+
+            //if ((maxAmplitudeCircles[i + 1].x - maxAmplitudeCircles[i].x) > 5) {
+                //currentHoveringCircle = maxAmplitudeCircles[i];
+
+            //}
 
             //interactionCanvas.stroke(0);
             //interactionCanvas.line(maxAmplitudeCircles[i].x,maxAmplitudeCircles[i].y,mouseX,mouseY);
@@ -209,11 +269,11 @@ function draw() {
             maxAmplitudeCircles[i].frequency = frequencyHertz;
             maxAmplitudeCircles[i].midi = freqToMidi(frequencyHertz);
 
-            console.log("MIDI" + maxAmplitudeCircles[i].midi);
-            console.log(maxAmplitudeCircles[i].frequency);//freq = i_max * Fs / N)
+            //console.log("MIDI" + maxAmplitudeCircles[i].midi);
+            //console.log(maxAmplitudeCircles[i].frequency);//freq = i_max * Fs / N)
 
             // }
-            //console.log(freqToMidi(maxAmplitudeCircles[i].maxAmplitude));
+            //console.log(freqToMidi(maxAmplitudeCircles[i].amplitude));
 
             //interactionCanvas.fill(0);
             //interactionCanvas.textSize(30);
@@ -224,6 +284,9 @@ function draw() {
             //fill(255);
             //ellipse(maxAmplitudeCircles[i].x,maxAmplitudeCircles[i].y,maxAmplitudeCircles[i].diameter,maxAmplitudeCircles[i].diameter);
             //console.log(maxAmplitudeCircles[i]);
+
+        }else{
+            //maxAmplitudeCircles[i].hovering = false;
 
         }
 
@@ -252,24 +315,48 @@ function draw() {
         //ellipse(((canvasWidth/100)*i), canvasHeight/2, scaledAmplitude*(canvasHeight/400), scaledAmplitude*(canvasHeight/400));
         if (x < canvasWidth) {
             //IN CASE WE NEED TO SAVE ALL CIRCLES FOR LATER REDRAWING
-            // graphicsBuffer.push({x:x, y:circlesY, diameter:getScaledDiameter(amplitude,ellipseDiameterZoomFactor), amplitude:amplitude})
-            ellipse(x, circlesY, getScaledDiameter(amplitude, ellipseDiameterZoomFactor), getScaledDiameter(amplitude, ellipseDiameterZoomFactor));
+            if(graphicsBuffer[i]== null) graphicsBuffer[i] = [];
+            graphicsBuffer[i].push({
+                x: x,
+                y: circlesY,
+                diameter: getScaledDiameter(amplitude, ellipseDiameterZoomFactor),
+                amplitude: amplitude,
+                midi: null,
+                frequency: null,
+                index: i,
+                hovering:false
+            })
+
+
+            if(currentHoveringCircle ==null || currentHoveringCircle.index == i){
+                ellipse(x, circlesY, getScaledDiameter(amplitude, ellipseDiameterZoomFactor), getScaledDiameter(amplitude, ellipseDiameterZoomFactor));
+            }
+
         }
     }
+
+
+
+    //checkHovering();
+
+
+
+
+
 
 
             //getMaxAmp per Band
             //if(scaledAmplitude>amps[i]){amps[i]=scaledAmplitude;}
 
-    interactiveCircles = maxAmplitudeCircles.filter(filterAmplitude);
-    console.log("INTERACTIVECIRCLES");
-    console.log(interactiveCircles);
+    //interactiveCircles = maxAmplitudeCircles.filter(filterAmplitude);
+    //console.log("INTERACTIVECIRCLES");
+    //console.log(interactiveCircles);
 
-    var groupedCircles = getGroupedCircles(interactiveCircles);
+    //var groupedCircles = getGroupedCircles(interactiveCircles);
 
     //var reducedCircles = reduceGroupedCircles(groupedCircles);
 
-    console.log(groupedCircles);
+    //console.log(groupedCircles);
     //console.log(reducedCircles);
 
         /*  var waveform = fft.waveform();
@@ -438,28 +525,58 @@ function saveImage() {
 }
 
 
+function redrawCircle(circlesAtBandI){
+    if(circlesAtBandI!=null) {
+        for (var i = 0; i < circlesAtBandI.length; i++) {
+            if (circlesAtBandI[i] != null) {
+                //console.log(circlesAtBandI[i].x + " " + circlesAtBandI[i].diameter);
+                stroke(100, 100 - (circlesAtBandI[i].amplitude / 4), 15, 8);
+                //stroke(255);
+                ellipse(circlesAtBandI[i].x, circlesAtBandI[i].y, circlesAtBandI[i].diameter, circlesAtBandI[i].diameter);
+            }
+        }
+    }
+}
 
-    function selectFunction() {
 
+
+function selectFunction() {
     loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay);
-    /*if (dropdown.selectedIndex == 0) {
-        var sound1 = loadSound('assets/klangschale_gr7_sc37307.mp3', resetAndPlay);
+}
+
+function checkHovering(){
+    //console.log("INTO CHECK");
+    var counter = 0;
+    for(var i=0;i<maxAmplitudeCircles.length;i++){
+        if(maxAmplitudeCircles[i]!=null){
+            if(maxAmplitudeCircles[i].hovering == true){
+                console.log("hovering "+ i);
+                currentHoveringCircle=maxAmplitudeCircles[i];
+                counter++;
+            }
+        }
+        if(counter=0){
+            currentHoveringCircle = null;
+        }
+    }
+}
 
 
-    } else if (dropdown.selectedIndex == 1) {
-        var sound2 = loadSound('assets/klangschale_gr10_sc37310.mp3', resetAndPlay);
+function findClosest(num, arr) {
+    if(arr==null){
+        return -1;
+    }
+    var curr = arr[0].x;
+    var index = 0;
+    var diff = Math.abs (num - curr);
+    for (var val = 0; val < arr.length; val++) {
+        var newdiff = Math.abs (num - arr[val].x);
+        if (newdiff < diff) {
+            diff = newdiff;
+            curr = arr[val].x;
+            index = arr[val].index;
+        }
+    }
 
-    } else if (dropdown.selectedIndex == 2) {
-        var sound3 = loadSound('assets/klangschale1.mp3', resetAndPlay);
-
-
-    } else if (dropdown.selectedIndex == 3) {
-        var sound4 = loadSound('assets/klangschale2.mp3', resetAndPlay);
-
-    } else if (dropdown.selectedIndex == 4) {
-        var sound4 = loadSound('assets/klangschale3.mp3', resetAndPlay);
-
-    } else if (dropdown.selectedIndex == 5) {
-        var sound4 = loadSound('assets/klangschale4.mp3', resetAndPlay);
-    }*/
+    return index;
 }
