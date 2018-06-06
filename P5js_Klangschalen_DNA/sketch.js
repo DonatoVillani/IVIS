@@ -15,7 +15,7 @@ const ellipseDiameterZoomFactor = (canvasHeight/300);
 
 const ampFactor = 0.8;
 
-const interactionThreshold = canvasHeight/10*5;
+
 
 //defines a frequency range - factor 1 maps from 0 to spectrum.length so from 0Hz to around 22Khz. Factor 4 can be seen as dividor -> 22khz : 4 = 5.5Khz  so the range would be 0 to 5.5khz
 const horizontalZoomFactor = 5;
@@ -25,30 +25,28 @@ const strokeWeight = canvasHeight/614 < 1 ? 1: canvasHeight/614;
 
 const sampleRate = 44100;
 
-const circlesY = canvasHeight/2;
+
 
 
 // ===================================================
 
+var interactionThreshold;
+
+var circlesY;
+
 var soundMP3Paths = [];
-
-var interactionCanvas;
-
-var mainCanvas;
 
 var cnv;
 
-var distances = [];
 
 var dropdown;
 
-var maxAmpPerFrequency = new Array (sampleRate/2);
 var maxAmplitudeCircles = [];
 
 var interactiveCircles = [];
 
 var max= new Array(sampleRate/2);//array that contains the half of the sampleRate size, because FFT only reads the half of the sampleRate frequency. This array will be filled with amplitude values.
-var maximum;//the maximum amplitude of the max array
+
 var frequency;//the frequency in hertz
 
 var spectrum = [];
@@ -61,24 +59,25 @@ var currentHoveringCircle = null;
 
 var graphicsBuffer = [];
 
-var isInteracting = false;
-
 var lastInteractedCircle = null;
 
 var needToRedraw = false;
 
 var hoveringIndices = [];
 
+var myFont;
+
+var filteredCircles = [];
+
 
 
 function preload() {
-    //mySound = loadSound('assets/klangschale_gr7_sc37307.mp3');
-    //mySound = loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay());
+    myFont = loadFont('assets/Roboto-Regular.ttf');
 }
 
 function uploaded(file){
     upLoad = true;
-    mySound = loadSound(file.data, resetAndPlay);
+    loadSound(file.data, resetAndPlay);
 
 }
 
@@ -92,12 +91,15 @@ function resetAndPlay(audioFile){
     mySound.amp(ampFactor);
     background(0);
     graphicsBuffer = new Array(fft.bins);
+    maxAmplitudeCircles = new Array(fft.bins);
     mySound.play();
 }
 
 
 
 function setup() {
+
+    frameRate(30);
 
     soundMP3Paths[0]= 'assets/klangschale_gr7_sc37307.mp3';
     soundMP3Paths[1]= 'assets/klangschale_gr10_sc37310.mp3';
@@ -132,13 +134,14 @@ function setup() {
 
     dropdown = document.getElementById("dropdown");
 
+    circlesY = windowHeight/2;
+    interactionThreshold= windowHeight/10*6;
+
     background(0);
 
     fft = new p5.FFT();
 
-    interactionCanvas = createGraphics(canvasWidth,100);
-    mainCanvas = createGraphics(windowWidth,windowHeight);
-
+    textFont(myFont);
 
 
     mySound = loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay);
@@ -150,69 +153,61 @@ function redrawGraphicsBuffer() {
         redrawCircle(graphicsBuffer[i]);
     }
 }
+function getStroke(amplitude) {
+    stroke(100, 100 - (amplitude / 4), 15, 8);
+}
 function draw() {
 
 
-    //Add a loading animation for the uploaded track
-    if (upLoad) {
-        uploadAnim.addClass('is-visible');
-    } else {
-        uploadAnim.removeClass('is-visible');
-    }
 
 
-    if(mouseY>windowHeight/4){
+    if(mouseY>windowHeight/4 && mouseY<(3*(windowHeight/4))){
 
-        var filteredCircles = maxAmplitudeCircles.filter(function (el) {
+        filteredCircles = maxAmplitudeCircles.filter(function (el) {
             return el.diameter >= interactionThreshold;
         });
+        console.log(filteredCircles);
 
         var closestCircleIndex = findClosest(mouseX,filteredCircles);
 
-        currentHoveringCircle = maxAmplitudeCircles[closestCircleIndex];
-        isInteracting = true;
-        //console.log("CURRENT HOVERING "+closestCircleIndex);
+        if(closestCircleIndex!=-1) {
+            currentHoveringCircle = maxAmplitudeCircles[closestCircleIndex];
+        }
     }else{
         currentHoveringCircle = null;
-        interactionCanvas.background(0);
-        image(interactionCanvas, 0, 0);
-        if(needToRedraw){redrawGraphicsBuffer();needToRedraw = false;}
+
+        if(needToRedraw){
+            background(0);
+            redrawGraphicsBuffer();
+            needToRedraw = false;}
     }
 
 
     if (currentHoveringCircle != null) {
-        interactionCanvas.background(0);
-        isInteracting = true;
-        interactionCanvas.fill(100);
-        interactionCanvas.textSize(12);
-        interactionCanvas.textAlign(CENTER);
-        interactionCanvas.text("Ton: "+ getMusicalNoteFromMidi(currentHoveringCircle.midi), (currentHoveringCircle.x / 2), 35);
-        interactionCanvas.text(round(currentHoveringCircle.frequency)+ "Hz",(currentHoveringCircle.x / 2), 45);
-        image(interactionCanvas, 0, 0);
-        //interactionCanvas.text("Frequenz des Universums",( );
-        stroke(0);
-        //line(currentHoveringCircle.x, currentHoveringCircle.y, mouseX, mouseY);
 
-        if(lastInteractedCircle == null || lastInteractedCircle.index != currentHoveringCircle.index) {
-            background(0);
+        if(lastInteractedCircle == null || lastInteractedCircle.index != currentHoveringCircle.index || !needToRedraw) {
+            background(0,150);
             redrawCircle(graphicsBuffer[currentHoveringCircle.index]);
+            fill(50);
+            textSize(20);
+            textAlign(CENTER);
+            text("Ton: "+ getMusicalNoteFromMidi(currentHoveringCircle.midi), (currentHoveringCircle.x), currentHoveringCircle.y);
+            text(round(currentHoveringCircle.frequency)+ "Hz",(currentHoveringCircle.x), currentHoveringCircle.y+20);
+            noFill();
         }
         lastInteractedCircle = currentHoveringCircle;
-        //console.log("MAXAMPLENGTH "+maxAmplitudeCircles.length);
-        //console.log("BUFFER LENGTH"+graphicsBuffer.length);
-        //console.log(graphicsBuffer[currentHoveringCircle.index].length);
         needToRedraw = true;
-        isInteracting = false;
+
     }
 
 
-
+    if(mySound.isPlaying()){
     spectrum = fft.analyze();
 
 
     for (var i = 0; i < spectrum.length; i++) {
         // the whole frequency spectrum in the image - x axis.. Not really useful in this case because "klangschalen"s frequencies conentrate from 0 to 2000 hz..
-        var x = map(i, 0, spectrum.length, 0, canvasWidth * horizontalZoomFactor);
+        var x = map(i, 0, spectrum.length, 100, canvasWidth * horizontalZoomFactor);
 
 
         //---------- also Interesting visualization of energy
@@ -222,10 +217,12 @@ function draw() {
 
         var amplitude = spectrum[i];
 
-
+        //console.log(fft.getCentroid());
         //Opportunity of showing the dominant mean center of the soundfile.. for example as vertical line..
         //centroids.push(fft.getCentroid());
         //console.log(fft.getCentroid());
+
+
 
         if (maxAmplitudeCircles[i] == null || amplitude > maxAmplitudeCircles[i].amplitude) {
 
@@ -234,97 +231,34 @@ function draw() {
                 y: circlesY,
                 diameter: getScaledDiameter(amplitude, ellipseDiameterZoomFactor),
                 amplitude: amplitude,
-                midi: null,
-                frequency: null,
+                midi: freqToMidi(i * (44100 / fft.bins / 2)),
+                frequency: i * (44100 / fft.bins / 2),
                 index: i
             }
         }
 
 
-
-
-        var distance = dist(mouseX, mouseY, maxAmplitudeCircles[i].x, maxAmplitudeCircles[i].y);
-
-
-
-
-
-
+        /*var distance = dist(mouseX, mouseY, maxAmplitudeCircles[i].x, maxAmplitudeCircles[i].y);
         if (maxAmplitudeCircles[i].diameter > interactionThreshold && distance < (maxAmplitudeCircles[i].diameter / 4)) {
-            //console.log(i+ " DIST "+ distance);
-
-
-
-
-
-            //if ((maxAmplitudeCircles[i + 1].x - maxAmplitudeCircles[i].x) > 5) {
-                //currentHoveringCircle = maxAmplitudeCircles[i];
-
-            //}
-
-            //interactionCanvas.stroke(0);
-            //interactionCanvas.line(maxAmplitudeCircles[i].x,maxAmplitudeCircles[i].y,mouseX,mouseY);
-
-            var frequencyHertz = i * (44100 / fft.bins / 2);
-            maxAmplitudeCircles[i].frequency = frequencyHertz;
-            maxAmplitudeCircles[i].midi = freqToMidi(frequencyHertz);
-
-            //console.log("MIDI" + maxAmplitudeCircles[i].midi);
-            //console.log(maxAmplitudeCircles[i].frequency);//freq = i_max * Fs / N)
-
-            // }
-            //console.log(freqToMidi(maxAmplitudeCircles[i].amplitude));
-
-            //interactionCanvas.fill(0);
-            //interactionCanvas.textSize(30);
-            //interactionCanvas.text("LOL");
-            //text(getMusicalNoteFromMidi(freqToMidi(frequencyHertz)) +" "+ frequencyHertz+" Hz", canvasWidth-100, 100*textCounter);
-            stroke(0, i % 4 * i * 20, i % 4 * i * 20);
-            //line(maxAmplitudeCircles[i].x, maxAmplitudeCircles[i].y, mouseX, mouseY);
-            //fill(255);
-            //ellipse(maxAmplitudeCircles[i].x,maxAmplitudeCircles[i].y,maxAmplitudeCircles[i].diameter,maxAmplitudeCircles[i].diameter);
-            //console.log(maxAmplitudeCircles[i]);
-
-        }else{
-            //maxAmplitudeCircles[i].hovering = false;
 
         }
-
-
-
-
-        //image(interactionCanvas, 0, 0);
-
-        //console.log(maxAmpPerFrequency);
-
-        //var scaledAmplitude = map(spectrum[i], 0, 256, 0, 1000)
-        // var x = map(i, 0, spectrum.length, 0, width);
-        // var h = -height + map(spectrum[i], 0, 255, height, 0);
-        //rect(x, height, width / spectrum.length, h )
-        //strokeWeight(4);
-
-        //stroke(240,220-(scaledAmplitude/2),15,9);
-
-        //console.log("spectrum iteration: "+ i + "with ampl:" + scaledAmplitude);
+        */
         noFill();
         colorMode(RGB, 100);
-        stroke(100, 100 - (amplitude / 4), 15, 8);
+
+        getStroke(amplitude);
 
 
-        //manual but working
-        //ellipse(((canvasWidth/100)*i), canvasHeight/2, scaledAmplitude*(canvasHeight/400), scaledAmplitude*(canvasHeight/400));
         if (x < canvasWidth) {
-            //IN CASE WE NEED TO SAVE ALL CIRCLES FOR LATER REDRAWING
             if(graphicsBuffer[i]== null) graphicsBuffer[i] = [];
             graphicsBuffer[i].push({
                 x: x,
                 y: circlesY,
                 diameter: getScaledDiameter(amplitude, ellipseDiameterZoomFactor),
                 amplitude: amplitude,
-                midi: null,
-                frequency: null,
-                index: i,
-                hovering:false
+                midi: freqToMidi(i * (44100 / fft.bins / 2)),
+                frequency: i * (44100 / fft.bins / 2),
+                index: i
             })
 
 
@@ -334,71 +268,16 @@ function draw() {
 
         }
     }
-
-
-
-    //checkHovering();
-
-
-
-
-
-
-
-            //getMaxAmp per Band
-            //if(scaledAmplitude>amps[i]){amps[i]=scaledAmplitude;}
-
-    //interactiveCircles = maxAmplitudeCircles.filter(filterAmplitude);
-    //console.log("INTERACTIVECIRCLES");
-    //console.log(interactiveCircles);
-
-    //var groupedCircles = getGroupedCircles(interactiveCircles);
-
-    //var reducedCircles = reduceGroupedCircles(groupedCircles);
-
-    //console.log(groupedCircles);
-    //console.log(reducedCircles);
-
-        /*  var waveform = fft.waveform();
-         noFill();
-         beginShape();
-         stroke(255,0,0); // waveform is red
-         strokeWeight(1);
-         for (var i = 0; i< waveform.length; i++){
-         var x = map(i, 0, waveform.length, 0, width);
-         var y = map( waveform[i], -1, 1, 0, height);
-         vertex(x,y);
-         }*/
+    }
 
         endShape();
     }
 
 
-    function findNote() {
-        var frequency = 0.0;
-        for (var f = 0; f < sampleRate / 2; f++) { //analyses the amplitude of each frequency analysed, between 0 and 22050 hertz
-            max[f] = fft.getFreq(f); //each index is correspondent to a frequency and contains the amplitude value
-        }
-        maximum = max(max);//get the maximum value of the max array in order to find the peak of volume
-
-        for (var i = 0; i < max.length; i++) {// read each frequency in order to compare with the peak of volume
-            if (max[i] == maximum) {//if the value is equal to the amplitude of the peak, get the index of the array, which corresponds to the frequency
-                frequency = i;
-            }
-        }
-        return frequency;
-    }
-
 
     function getScaledDiameter(amplitude, ellipseDiameterZoomFactor) {
         return amplitude * ellipseDiameterZoomFactor;
     }
-
-    /*
-     function getCircleXCoordinate(i, spectrum.length){
-     return map(i, 0, spectrum.length, 0, width * horizontalZoomFactor);
-     }*/
-
 
     function getMusicalNoteFromMidi(midi) {
         var n = midi;
@@ -464,64 +343,8 @@ function draw() {
     }
 
 
-    /*
-     function windowResized() {
-     resizeCanvas(windowWidth, windowHeight);
-     }
-     */
-/*
-//This is meant for the case if we need to save all the circles to a datastructure and redraw the current state
-    function redrawGraphicsBuffer() {
-        background(10);
-        for (var i = 0; i < graphicsBuffer.length; i++) {
-            console.log(graphicsBuffer.length);
-            noFill();
-            colorMode(RGB, 100);
-            stroke(100, 100 - (graphicsBuffer[i].amplitude / 4), 15, 8);
-            ellipse(graphicsBuffer[i].x, graphicsBuffer[i].y, graphicsBuffer[i].diameter, graphicsBuffer[i].diameter);
-        }
-    }*/
-
-
-     function getGroupedCircles(elements){
-     var groupedCircles = [];
-     var dataStructureIndex=0;
-     var index=0;
-     while(index<elements.length-1){
-         groupedCircles[dataStructureIndex].push(elements[index]);
-         if((elements[index+1].x - elements[index].x) < 10){
-             index++;
-         }
-         else{
-             dataStructureIndex++;
-         }
-         }
-         return groupedCircles;
-     }
-
-     function reduceGroupedCircles(groupedCircles){
-         for(var i=0;i<groupedCircles.length;i++){
-             if(groupedCircles[i].length>1){
-                 var maxAmp =0;
-                 var maxElementInGroupIndex;
-                for(var j=0;j<groupedCircles.length;j++){
-                    if(groupedCircles[i][j].amplitude > maxAmp){
-                       maxAmp = groupedCircles[i][j].amplitude;
-                       maxElementInGroupIndex = j;
-                    }
-                }
-                 groupedCircles[i] = groupedCircles[i][maxElementInGroupIndex];
-             }
-         }
-         return groupedCircles;
-     }
-
-     function filterAmplitude(element){
-         element.amplitude > interactionThreshold;
-     }
-
 function saveImage() {
-    saveCanvas('KlangschaleImage', 'jpg');
+    drawInfosForScreenshot();
 }
 
 
@@ -529,9 +352,8 @@ function redrawCircle(circlesAtBandI){
     if(circlesAtBandI!=null) {
         for (var i = 0; i < circlesAtBandI.length; i++) {
             if (circlesAtBandI[i] != null) {
-                //console.log(circlesAtBandI[i].x + " " + circlesAtBandI[i].diameter);
+                noFill();
                 stroke(100, 100 - (circlesAtBandI[i].amplitude / 4), 15, 8);
-                //stroke(255);
                 ellipse(circlesAtBandI[i].x, circlesAtBandI[i].y, circlesAtBandI[i].diameter, circlesAtBandI[i].diameter);
             }
         }
@@ -544,28 +366,12 @@ function selectFunction() {
     loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay);
 }
 
-function checkHovering(){
-    //console.log("INTO CHECK");
-    var counter = 0;
-    for(var i=0;i<maxAmplitudeCircles.length;i++){
-        if(maxAmplitudeCircles[i]!=null){
-            if(maxAmplitudeCircles[i].hovering == true){
-                console.log("hovering "+ i);
-                currentHoveringCircle=maxAmplitudeCircles[i];
-                counter++;
-            }
-        }
-        if(counter=0){
-            currentHoveringCircle = null;
-        }
-    }
-}
-
 
 function findClosest(num, arr) {
-    if(arr==null){
+    if(arr==null || arr.length==0){
         return -1;
     }
+
     var curr = arr[0].x;
     var index = 0;
     var diff = Math.abs (num - curr);
@@ -579,4 +385,32 @@ function findClosest(num, arr) {
     }
 
     return index;
+}
+
+
+function drawInfosForScreenshot(){
+    fill(100);
+    textSize(16);
+    textAlign(CENTER);
+    var lastXPos = 0;
+    var sortedFilteredCircles = filteredCircles.sort(compareXPos);
+    console.log(sortedFilteredCircles);
+    for(var i=0;i<sortedFilteredCircles.length;i++){
+        var xPos = sortedFilteredCircles[i].x - lastXPos < 60? lastXPos+60 : sortedFilteredCircles[i].x;
+        lastXPos=xPos;
+        noStroke();
+        text("Ton: "+ getMusicalNoteFromMidi(sortedFilteredCircles[i].midi), xPos, 30);
+        text(round(sortedFilteredCircles[i].frequency)+ "Hz",xPos, 50);
+        stroke(80);
+        line(xPos,50,sortedFilteredCircles[i].x,sortedFilteredCircles[i].y);
+    }
+    saveCanvas('Klangschalen_DNA', 'jpg');
+}
+
+function compareXPos(a,b) {
+    if (a.x < b.x)
+        return -1;
+    if (a.x > b.x)
+        return 1;
+    return 0;
 }

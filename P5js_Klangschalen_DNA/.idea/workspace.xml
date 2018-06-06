@@ -21,8 +21,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <state relative-caret-position="75">
+              <caret line="5" column="72" lean-forward="true" selection-start-line="5" selection-start-column="72" selection-end-line="5" selection-end-column="72" />
               <folding />
             </state>
           </provider>
@@ -31,8 +31,8 @@
       <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="106" column="1" lean-forward="true" selection-start-line="106" selection-start-column="1" selection-end-line="106" selection-end-column="1" />
+            <state relative-caret-position="534">
+              <caret line="128" column="0" lean-forward="true" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -41,8 +41,8 @@
       <file leaf-file-name="sketch.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sketch.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="598">
-              <caret line="331" column="16" lean-forward="true" selection-start-line="331" selection-start-column="16" selection-end-line="331" selection-end-column="16" />
+            <state relative-caret-position="503">
+              <caret line="137" column="44" lean-forward="true" selection-start-line="137" selection-start-column="44" selection-end-line="137" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -52,45 +52,45 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>reset</find>
-      <find>graphicsbu</find>
-      <find>graphicsbuffer</find>
-      <find>graphicsb</find>
-      <find>push</find>
-      <find>circle.amp</find>
-      <find>isinterac</find>
-      <find>.amplitude</find>
-      <find>.maxamplitude</find>
-      <find>console</find>
       <find>content</find>
-      <find>redrawcir</find>
-      <find>maxamp</find>
-      <find>maxamplitudecir</find>
-      <find>isinter</find>
-      <find>redraw</find>
-      <find>redrawg</find>
-      <find>current</find>
-      <find>filterAmplitude</find>
+      <find>createg</find>
+      <find>background(</find>
+      <find>centroid</find>
+      <find>uploaded</find>
+      <find>setup</find>
+      <find>interact</find>
+      <find>findclos</find>
+      <find>findclose</find>
+      <find>pre</find>
+      <find>redrawc</find>
+      <find>.amplit</find>
       <find>filter</find>
-      <find>interactionthr</find>
-      <find>arr.x</find>
-      <find>maxamplitudecircles =</find>
-      <find>maxamplitudecircles</find>
       <find>findcloses</find>
+      <find>map</find>
+      <find>is-</find>
+      <find>redrawgraphicsbuff</find>
+      <find>isinterac</find>
+      <find>redrawcir</find>
+      <find>resetan</find>
+      <find>upload</find>
+      <find>interactioncanv</find>
+      <find>save</find>
+      <find>drawInfosForScreenshot</find>
       <find>console.log</find>
-      <find>image</find>
-      <find>image(interactionCanvas, 0, 0);</find>
-      <find>needto</find>
-      <find>ellipse(</find>
+      <find>y</find>
+      <find>y:</find>
+      <find>circlesY</find>
+      <find>is</find>
+      <find>interaction</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/style.css" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/css/style.css" />
         <option value="$PROJECT_DIR$/sketch.js" />
+        <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
   </component>
@@ -101,8 +101,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="112" />
-    <option name="y" value="22" />
+    <option name="x" value="178" />
+    <option name="y" value="34" />
     <option name="width" value="1511" />
     <option name="height" value="938" />
   </component>
@@ -196,6 +196,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="css" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P5js_Klangschalen_DNA" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="P5js_Klangschalen_DNA" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -309,12 +323,12 @@
       <workItem from="1528137597782" duration="1655000" />
       <workItem from="1528183012222" duration="26713000" />
       <workItem from="1528220091468" duration="551000" />
-      <workItem from="1528276813639" duration="17420000" />
+      <workItem from="1528276813639" duration="25917000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="80646000" />
+    <option name="totallyTimeSpent" value="89143000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -326,7 +340,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="112" y="22" width="1511" height="938" extended-state="0" />
+    <frame x="178" y="34" width="1511" height="938" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23163468" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -496,24 +510,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="106" column="1" lean-forward="true" selection-start-line="106" selection-start-column="1" selection-end-line="106" selection-end-column="1" />
+        <state relative-caret-position="534">
+          <caret line="128" column="0" lean-forward="true" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sketch.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="331" column="16" lean-forward="true" selection-start-line="331" selection-start-column="16" selection-end-line="331" selection-end-column="16" />
+        <state relative-caret-position="503">
+          <caret line="137" column="44" lean-forward="true" selection-start-line="137" selection-start-column="44" selection-end-line="137" selection-end-column="44" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        <state relative-caret-position="75">
+          <caret line="5" column="72" lean-forward="true" selection-start-line="5" selection-start-column="72" selection-end-line="5" selection-end-column="72" />
           <folding />
         </state>
       </provider>
