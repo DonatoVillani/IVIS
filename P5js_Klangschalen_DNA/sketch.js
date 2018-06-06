@@ -26,8 +26,11 @@ const strokeWeight = canvasHeight/614 < 1 ? 1: canvasHeight/614;
 const sampleRate = 44100;
 
 const circlesY = canvasHeight/2;
+
+
 // ===================================================
 
+var soundMP3Paths = [];
 
 var interactionCanvas;
 
@@ -35,6 +38,8 @@ var canvasDrawing = [];
 var cnv;
 
 var distances = [];
+
+var dropdown;
 
 var maxAmpPerFrequency = new Array (sampleRate/2);
 var maxAmplitudeCircles = [];
@@ -56,12 +61,13 @@ var currentHoveringCircle = null;
 var graphicsBuffer = [];
 
 function preload() {
-    mySound = loadSound('assets/klangschale_gr7_sc37307.mp3');
+    //mySound = loadSound('assets/klangschale_gr7_sc37307.mp3');
+    //mySound = loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay());
 }
 
 function uploaded(file){
     upLoad = true;
-    uploadedAudio = loadSound(file.data, resetAndPlay);
+    mySound = loadSound(file.data, resetAndPlay);
 
 }
 
@@ -71,15 +77,22 @@ function resetAndPlay(audioFile){
     if(mySound.isPlaying()){
         mySound.pause();
     }
-
     mySound = audioFile;
+    mySound.amp(ampFactor);
+    background(0);
     mySound.play();
-    background(0);//setup();
 }
 
 
 
 function setup() {
+
+    soundMP3Paths[0]= 'assets/klangschale_gr7_sc37307.mp3';
+    soundMP3Paths[1]= 'assets/klangschale_gr10_sc37310.mp3';
+    soundMP3Paths[2]= 'assets/klangschale1.mp3';
+    soundMP3Paths[3]= 'assets/klangschale2.mp3';
+    soundMP3Paths[4]= 'assets/klangschale3.mp3';
+    soundMP3Paths[5]= 'assets/klangschale4.mp3';
 
     createCanvas(windowWidth,windowHeight);
   //  createCanvas(canvasWidth,canvasHeight);
@@ -104,16 +117,16 @@ function setup() {
 
     downloadBtn.mousePressed(saveImage);
 
+    dropdown = document.getElementById("dropdown");
 
     background(0);
 
+    fft = new p5.FFT();
     interactionCanvas = createGraphics(canvasWidth,100);
 
 
 
-    fft = new p5.FFT();
-    mySound.amp(ampFactor);
-   // mySound.play();
+    mySound = loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay);
 }
 
 function draw() {
@@ -427,9 +440,9 @@ function saveImage() {
 
 
     function selectFunction() {
-    var dropdown = document.getElementById("dropdown");
 
-    if (dropdown.selectedIndex == 0) {
+    loadSound(soundMP3Paths[dropdown.selectedIndex],resetAndPlay);
+    /*if (dropdown.selectedIndex == 0) {
         var sound1 = loadSound('assets/klangschale_gr7_sc37307.mp3', resetAndPlay);
 
 
@@ -448,5 +461,5 @@ function saveImage() {
 
     } else if (dropdown.selectedIndex == 5) {
         var sound4 = loadSound('assets/klangschale4.mp3', resetAndPlay);
-    }
+    }*/
 }
