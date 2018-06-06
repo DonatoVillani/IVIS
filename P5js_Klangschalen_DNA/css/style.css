@@ -34,6 +34,7 @@ canvas {
     align-items: center;
     width: 100%;
     padding: 2vmax;
+    background:transparent;
     z-index: 1;
 }
 
@@ -91,7 +92,7 @@ canvas {
 }
 
 .upload-btn::before,
-.toggle-btn {
+.toggle-btn,.download-btn {
     padding: 10px;
     text-align: center;
     text-transform: uppercase;
@@ -101,13 +102,15 @@ canvas {
     bottom: 2vmax;
     border: 1px solid;
     width: 255px;
+    height:50px;
+    cursor: pointer;
 }
 
 .upload-btn::before {
-    content: 'Upload your track';
+    content: 'Klangschalenaufnahme hochladen';
     display: inline-block;
     left: 2vmax;
-    cursor: pointer;
+
 }
 
 
@@ -117,18 +120,6 @@ canvas {
     right: 2vmax;
 }
 
-
-.download-btn{
-    padding: 10px;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: currentColor;
-    position: absolute;
-    bottom: 2vmax;
-    border: 1px solid;
-    width: 255px;
-}
 
 .download-btn{
     background: transparent;

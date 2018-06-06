@@ -74,7 +74,7 @@ function resetAndPlay(audioFile){
 
     mySound = audioFile;
     mySound.play();
-    setup();
+    background(0);//setup();
 }
 
 
@@ -86,7 +86,7 @@ function setup() {
 
     uploadAnim = select('#uploading-animation');
 
-    playPauseBtn = createButton("Play / Pause");
+    playPauseBtn = createButton("Start / Stopp");
 
     uploadBtn = createFileInput(uploaded);
 
@@ -98,7 +98,7 @@ function setup() {
 
     playPauseBtn.mousePressed(toggleAudio);
 
-    downloadBtn = createButton("Download Image");
+    downloadBtn = createButton("Klangschalen-DNA herunterladen");
 
     downloadBtn.addClass("download-btn");
 
@@ -424,7 +424,9 @@ function saveImage() {
     saveCanvas('KlangschaleImage', 'jpg');
 }
 
-function selectFunction() {
+
+
+    function selectFunction() {
     var dropdown = document.getElementById("dropdown");
 
     if (dropdown.selectedIndex == 0) {
