@@ -11,7 +11,7 @@ var canvasWidth = 2000;
 var upLoad = false;
 var mySound, uploadBtn, playPauseBtn, downloadBtn, uploadedAudio, uploadAnim;
 
-const ellipseDiameterZoomFactor = (canvasHeight/300);
+var ellipseDiameterZoomFactor;
 
 const ampFactor = 0.8;
 
@@ -135,11 +135,12 @@ function setup() {
     dropdown = document.getElementById("dropdown");
 
     circlesY = windowHeight/2;
-    interactionThreshold= windowHeight/10*6;
+    interactionThreshold= windowHeight/10*5;
+    ellipseDiameterZoomFactor = windowHeight/300;
 
     background(0);
 
-    fft = new p5.FFT();
+    fft = new p5.FFT(0,512);
 
     textFont(myFont);
 
@@ -164,9 +165,14 @@ function draw() {
     if(mouseY>windowHeight/4 && mouseY<(3*(windowHeight/4))){
 
         filteredCircles = maxAmplitudeCircles.filter(function (el) {
-            return el.diameter >= interactionThreshold;
+            if(el==null || graphicsBuffer[el.index]==null)return false;
+
+            var circlesAboveThreshold = graphicsBuffer[el.index].filter(function(a){
+                return a.diameter >interactionThreshold;
+            })
+            return circlesAboveThreshold.length > 8;
         });
-        console.log(filteredCircles);
+        //console.log(filteredCircles);
 
         var closestCircleIndex = findClosest(mouseX,filteredCircles);
 
@@ -222,14 +228,14 @@ function draw() {
         //centroids.push(fft.getCentroid());
         //console.log(fft.getCentroid());
 
-
+        var diameter = getScaledDiameter(amplitude, ellipseDiameterZoomFactor);
 
         if (maxAmplitudeCircles[i] == null || amplitude > maxAmplitudeCircles[i].amplitude) {
 
             maxAmplitudeCircles[i] = {
                 x: x,
                 y: circlesY,
-                diameter: getScaledDiameter(amplitude, ellipseDiameterZoomFactor),
+                diameter: diameter,
                 amplitude: amplitude,
                 midi: freqToMidi(i * (44100 / fft.bins / 2)),
                 frequency: i * (44100 / fft.bins / 2),
@@ -249,12 +255,12 @@ function draw() {
         getStroke(amplitude);
 
 
-        if (x < canvasWidth) {
+        if (x < canvasWidth && diameter != 0) {
             if(graphicsBuffer[i]== null) graphicsBuffer[i] = [];
             graphicsBuffer[i].push({
                 x: x,
                 y: circlesY,
-                diameter: getScaledDiameter(amplitude, ellipseDiameterZoomFactor),
+                diameter: diameter,
                 amplitude: amplitude,
                 midi: freqToMidi(i * (44100 / fft.bins / 2)),
                 frequency: i * (44100 / fft.bins / 2),
@@ -389,13 +395,22 @@ function findClosest(num, arr) {
 
 
 function drawInfosForScreenshot(){
+    var maximumAmountOfCircleInfo = 100;
     fill(100);
     textSize(16);
     textAlign(CENTER);
     var lastXPos = 0;
     var sortedFilteredCircles = filteredCircles.sort(compareXPos);
-    console.log(sortedFilteredCircles);
-    for(var i=0;i<sortedFilteredCircles.length;i++){
+    //console.log(sortedFilteredCircles);
+
+    for(var i=0;i< (sortedFilteredCircles.length > maximumAmountOfCircleInfo ? maximumAmountOfCircleInfo : sortedFilteredCircles.length);i++){
+        /*if(i>0){
+            if(sortedFilteredCircles[i+1].frequency-sortedFilteredCircles[i].frequency > 20){
+
+            }
+        }*/
+
+        console.log(graphicsBuffer[sortedFilteredCircles[i].index]);
         var xPos = sortedFilteredCircles[i].x - lastXPos < 60? lastXPos+60 : sortedFilteredCircles[i].x;
         lastXPos=xPos;
         noStroke();
@@ -403,6 +418,7 @@ function drawInfosForScreenshot(){
         text(round(sortedFilteredCircles[i].frequency)+ "Hz",xPos, 50);
         stroke(80);
         line(xPos,50,sortedFilteredCircles[i].x,sortedFilteredCircles[i].y);
+
     }
     saveCanvas('Klangschalen_DNA', 'jpg');
 }
