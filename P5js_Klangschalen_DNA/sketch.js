@@ -1,35 +1,27 @@
 /**
  * Created by Marco on 17.04.18.
  */
-//Minim       minim;
-//AudioPlayer in;
-//FFT         fft;
 
 // ====================CONSTANTS======================
-var canvasHeight = 1000;
-var canvasWidth = 2000;
-var upLoad = false;
-var mySound, uploadBtn, playPauseBtn, downloadBtn, uploadedAudio, uploadAnim;
-
-var ellipseDiameterZoomFactor;
 
 const ampFactor = 0.8;
-
-
 
 //defines a frequency range - factor 1 maps from 0 to spectrum.length so from 0Hz to around 22Khz. Factor 4 can be seen as dividor -> 22khz : 4 = 5.5Khz  so the range would be 0 to 5.5khz
 const horizontalZoomFactor = 5;
 
-//personal favorite Ratio after trying different strokeweights.
-const strokeWeight = canvasHeight/614 < 1 ? 1: canvasHeight/614;
-
-const sampleRate = 44100;
-
-
-
+const strokeWeight = 1.6;
 
 // ===================================================
 
+var canvasHeight = 1000;
+
+var canvasWidth = 2000;
+
+var upLoad = false;
+
+var mySound, uploadBtn, playPauseBtn, downloadBtn, uploadAnim;
+
+var ellipseDiameterZoomFactor;
 
 var interactionThresholdRelative;
 
@@ -39,22 +31,17 @@ var soundMP3Paths = [];
 
 var cnv;
 
-
 var dropdown;
 
 var maxAmplitudeCircles = [];
 
 var interactiveCircles = [];
 
-
-
 var frequency;//the frequency in hertz
 
 var spectrum = [];
 
 var centroids = [];
-
-var textCounter = 0;
 
 var currentHoveringCircle = null;
 
@@ -113,8 +100,6 @@ function setup() {
 
     cnv = createCanvas(windowWidth,windowHeight);
 
-  //  createCanvas(canvasWidth,canvasHeight);
-
     uploadAnim = select('#uploading-animation');
 
     playPauseBtn = createButton("Start / Stopp");
@@ -137,8 +122,11 @@ function setup() {
 
     dropdown = document.getElementById("dropdown");
 
+
     circlesY = windowHeight/2;
+
     interactionThreshold= 100;
+
     ellipseDiameterZoomFactor = windowHeight/300;
 
     background(0);
@@ -216,7 +204,7 @@ function draw() {
 
 
     for (var i = 0; i < spectrum.length; i++) {
-        // the whole frequency spectrum in the image - x axis.. Not really useful in this case because "klangschalen"s frequencies conentrate from 0 to 2000 hz..
+        // the whole frequency spectrum in the image - x axis.. Not really useful in this case because "klangschalen"s frequencies concentrate from 0 to 4000 hz..
         var x = map(i, 0, spectrum.length, 100, windowWidth * horizontalZoomFactor);
 
 
@@ -227,8 +215,9 @@ function draw() {
 
         var amplitude = spectrum[i];
 
+
+        //----------Opportunity of showing the dominant mean center of the soundfile.. for example as vertical line..
         //console.log(fft.getCentroid());
-        //Opportunity of showing the dominant mean center of the soundfile.. for example as vertical line..
         //centroids.push(fft.getCentroid());
         //console.log(fft.getCentroid());
 
@@ -248,11 +237,6 @@ function draw() {
         }
 
 
-        /*var distance = dist(mouseX, mouseY, maxAmplitudeCircles[i].x, maxAmplitudeCircles[i].y);
-        if (maxAmplitudeCircles[i].diameter > interactionThreshold && distance < (maxAmplitudeCircles[i].diameter / 4)) {
-
-        }
-        */
         noFill();
         colorMode(RGB, 100);
 
@@ -296,6 +280,7 @@ function draw() {
         var n = midi;
         var note = "";
         //the octave have 12 tones and semitones. So, if we get a modulo of 12, we get the note names independently of the frequency
+        //veeeery ugly solution ^^ will "switch"
         if (n % 12 == 9) {
             note = ("a");
         }
@@ -402,22 +387,13 @@ function findClosest(num, arr) {
 
 
 function drawInfosForScreenshot(){
-    var maximumAmountOfCircleInfo = 100;
     fill(100);
     textSize(16);
     textAlign(CENTER);
     var lastXPos = 0;
     var sortedFilteredCircles = filteredCircles.sort(compareXPos);
-    //console.log(sortedFilteredCircles);
 
-    for(var i=0;i< (sortedFilteredCircles.length > maximumAmountOfCircleInfo ? maximumAmountOfCircleInfo : sortedFilteredCircles.length);i++){
-        /*if(i>0){
-            if(sortedFilteredCircles[i+1].frequency-sortedFilteredCircles[i].frequency > 20){
-
-            }
-        }*/
-
-        console.log(graphicsBuffer[sortedFilteredCircles[i].index]);
+    for(var i=0;i<sortedFilteredCircles.length;i++){
         var xPos = sortedFilteredCircles[i].x - lastXPos < 60? lastXPos+60 : sortedFilteredCircles[i].x;
         lastXPos=xPos;
         noStroke();
@@ -425,7 +401,6 @@ function drawInfosForScreenshot(){
         text(round(sortedFilteredCircles[i].frequency)+ "Hz",xPos, 50);
         stroke(80);
         line(xPos,50,sortedFilteredCircles[i].x,sortedFilteredCircles[i].y);
-
     }
     saveCanvas('Klangschalen_DNA', 'jpg');
 }
