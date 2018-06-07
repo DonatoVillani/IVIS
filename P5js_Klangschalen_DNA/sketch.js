@@ -30,7 +30,8 @@ const sampleRate = 44100;
 
 // ===================================================
 
-var interactionThreshold;
+
+var interactionThresholdRelative;
 
 var circlesY;
 
@@ -45,7 +46,7 @@ var maxAmplitudeCircles = [];
 
 var interactiveCircles = [];
 
-var max= new Array(sampleRate/2);//array that contains the half of the sampleRate size, because FFT only reads the half of the sampleRate frequency. This array will be filled with amplitude values.
+
 
 var frequency;//the frequency in hertz
 
@@ -68,6 +69,8 @@ var hoveringIndices = [];
 var myFont;
 
 var filteredCircles = [];
+
+var circlesAboveThreshold;
 
 
 
@@ -135,7 +138,7 @@ function setup() {
     dropdown = document.getElementById("dropdown");
 
     circlesY = windowHeight/2;
-    interactionThreshold= windowHeight/10*5;
+    interactionThreshold= 100;
     ellipseDiameterZoomFactor = windowHeight/300;
 
     background(0);
@@ -167,8 +170,8 @@ function draw() {
         filteredCircles = maxAmplitudeCircles.filter(function (el) {
             if(el==null || graphicsBuffer[el.index]==null)return false;
 
-            var circlesAboveThreshold = graphicsBuffer[el.index].filter(function(a){
-                return a.diameter >interactionThreshold;
+            circlesAboveThreshold = graphicsBuffer[el.index].filter(function(a){
+                return a.amplitude > interactionThresholdRelative;
             })
             return circlesAboveThreshold.length > 8;
         });
@@ -179,6 +182,7 @@ function draw() {
         if(closestCircleIndex!=-1) {
             currentHoveringCircle = maxAmplitudeCircles[closestCircleIndex];
         }
+
     }else{
         currentHoveringCircle = null;
 
@@ -213,7 +217,7 @@ function draw() {
 
     for (var i = 0; i < spectrum.length; i++) {
         // the whole frequency spectrum in the image - x axis.. Not really useful in this case because "klangschalen"s frequencies conentrate from 0 to 2000 hz..
-        var x = map(i, 0, spectrum.length, 100, canvasWidth * horizontalZoomFactor);
+        var x = map(i, 0, spectrum.length, 100, windowWidth * horizontalZoomFactor);
 
 
         //---------- also Interesting visualization of energy
@@ -275,6 +279,9 @@ function draw() {
         }
     }
     }
+    var maxAmps = maxAmplitudeCircles.map(function(o){return o.amplitude;});
+    console.log(maxAmps);
+    interactionThresholdRelative = percentile(maxAmps,0.955+(circlesAboveThreshold !=null ? circlesAboveThreshold.length/100 : 0));//Math.max.apply(Math,maxAmplitudeCircles.map(function(o){return o.amplitude;}))/10*6;
 
         endShape();
     }
@@ -429,4 +436,20 @@ function compareXPos(a,b) {
     if (a.x > b.x)
         return 1;
     return 0;
+}
+
+function percentile(arr, p) {
+    if (arr.length === 0) return 0;
+    if (typeof p !== 'number') throw new TypeError('p must be a number');
+    if (p <= 0) return arr[0];
+    if (p >= 1) return arr[arr.length - 1];
+
+    arr.sort(function (a, b) { return a - b; });
+    var index = (arr.length - 1) * p
+    lower = Math.floor(index),
+        upper = lower + 1,
+        weight = index % 1;
+
+    if (upper >= arr.length) return arr[lower];
+    return arr[lower] * (1 - weight) + arr[upper] * weight;
 }
