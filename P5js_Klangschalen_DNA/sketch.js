@@ -13,10 +13,6 @@ const strokeWeight = 1.6;
 
 // ===================================================
 
-var canvasHeight = 1000;
-
-var canvasWidth = 2000;
-
 var upLoad = false;
 
 var mySound, uploadBtn, playPauseBtn, downloadBtn, uploadAnim;
@@ -35,13 +31,9 @@ var dropdown;
 
 var maxAmplitudeCircles = [];
 
-var interactiveCircles = [];
-
 var frequency;//the frequency in hertz
 
 var spectrum = [];
-
-var centroids = [];
 
 var currentHoveringCircle = null;
 
@@ -51,13 +43,15 @@ var lastInteractedCircle = null;
 
 var needToRedraw = false;
 
-var hoveringIndices = [];
-
 var myFont;
 
 var filteredCircles = [];
 
 var circlesAboveThreshold;
+
+var fft;
+
+var interactionThreshold;
 
 
 
@@ -122,7 +116,6 @@ function setup() {
 
     dropdown = document.getElementById("dropdown");
 
-
     circlesY = windowHeight/2;
 
     interactionThreshold= 100;
@@ -163,7 +156,6 @@ function draw() {
             })
             return circlesAboveThreshold.length > 8;
         });
-        //console.log(filteredCircles);
 
         var closestCircleIndex = findClosest(mouseX,filteredCircles);
 
@@ -243,7 +235,7 @@ function draw() {
         getStroke(amplitude);
 
 
-        if (x < canvasWidth && diameter != 0) {
+        if (x < windowWidth && diameter != 0) {
             if(graphicsBuffer[i]== null) graphicsBuffer[i] = [];
             graphicsBuffer[i].push({
                 x: x,
